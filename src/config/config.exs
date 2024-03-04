@@ -42,7 +42,7 @@ config :phoenix, :json_library, Jason
 # Oban config
 config :questions, Oban,
   repo: Questions.Repo,
-  queues: [default: 10]
+  queues: [default: 10, notifications: 10]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
