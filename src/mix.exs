@@ -48,7 +48,9 @@ defmodule Questions.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:oban, "~> 2.17"},
       {:ex_machina, "~> 2.7.0", only: :test},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:mock, "~> 0.3", only: :test},
+      {:faker, "~> 0.18"}
     ]
   end
 
