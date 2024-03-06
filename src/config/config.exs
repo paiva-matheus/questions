@@ -44,6 +44,9 @@ config :questions, Oban,
   repo: Questions.Repo,
   queues: [default: 10, notifications: 10]
 
+# bcrypt
+config :bcrypt_elixir, log_rounds: 4
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

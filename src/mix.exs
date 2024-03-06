@@ -50,7 +50,8 @@ defmodule Questions.MixProject do
       {:ex_machina, "~> 2.7.0", only: :test},
       {:cors_plug, "~> 3.0"},
       {:mock, "~> 0.3", only: :test},
-      {:faker, "~> 0.18"}
+      {:faker, "~> 0.18"},
+      {:bcrypt_elixir, "~> 3.0"}
     ]
   end
 
