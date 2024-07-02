@@ -35,3 +35,8 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Oban config
 config :questions, Oban, testing: :inline
+
+# Guardian config for tests
+config :questions, Questions.AccessControl.Guardian,
+  issuer: "questions",
+  secret_key: "3UDQu8cbvgvSGsOPTAQcpSh2FbM6yPZ71yDilpBocsmrMMTC2zjOjNrLyrJ9PCKu"

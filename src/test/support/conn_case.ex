@@ -35,4 +35,9 @@ defmodule QuestionsWeb.ConnCase do
     Questions.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  def authorize_request!(conn, user) do
+    {:ok, jwt, _} = Questions.AccessControl.Guardian.encode_and_sign(user, %{}, ttl: {1, :week})
+    Plug.Conn.put_req_header(conn, "authorization", "Bearer #{jwt}")
+  end
 end

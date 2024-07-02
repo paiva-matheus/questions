@@ -51,7 +51,8 @@ defmodule Questions.MixProject do
       {:cors_plug, "~> 3.0"},
       {:mock, "~> 0.3", only: :test},
       {:faker, "~> 0.18"},
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:guardian, "~> 2.2"}
     ]
   end
 

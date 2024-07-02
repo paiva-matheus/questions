@@ -44,7 +44,11 @@ config :questions, Oban,
   repo: Questions.Repo,
   queues: [default: 10, notifications: 10]
 
-# bcrypt
+# Guardian config
+config :questions, Questions.AccessControl.Guardian,
+  issuer: "questions",
+  secret_key: System.get_env("GUARDIAN_TOKEN")
+
 config :bcrypt_elixir, log_rounds: 4
 
 # Import environment specific config. This must remain at the bottom

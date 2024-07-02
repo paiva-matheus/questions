@@ -65,6 +65,13 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  # Guardian configuration
+  guardian_token = System.fetch_env!("GUARDIAN_TOKEN")
+
+  config :questions, Questions.AccessControl.Guardian,
+    issuer: "questions",
+    secret_key: guardian_token
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
