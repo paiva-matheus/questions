@@ -106,4 +106,67 @@ defmodule Questions.AccountsTest do
                Accounts.sign_in(%{email: Faker.Internet.email(), password: "123"})
     end
   end
+
+  describe "list_users/1" do
+    test "returns a list of user accounts" do
+      users =
+        [
+          Factory.insert(:user, role: "facilitator"),
+          Factory.insert(:user, role: "instructor"),
+          Factory.insert(:user, role: "admin")
+        ]
+        |> sort_by_id()
+
+      assert Accounts.list_users([]) == users
+    end
+
+    test "returns users filtered by name" do
+      user_1 = Factory.insert(:user, %{name: "Jim Halpert"})
+      user_2 = Factory.insert(:user, %{name: "Willian Timmot"})
+      Factory.insert_list(3, :user)
+
+      assert Accounts.list_users(q: "halper") == [user_1]
+      assert Accounts.list_users(q: "tim") == [user_2]
+    end
+
+    test "returns users with same first name" do
+      user_1 = Factory.insert(:user, %{name: "Willian Timmot"})
+      user_2 = Factory.insert(:user, %{name: "Willian Morris"})
+      Factory.insert_list(3, :user)
+
+      assert Accounts.list_users(q: "will") == sort_by_id([user_1, user_2])
+    end
+
+    test "returns user filtered by email" do
+      user_1 = Factory.insert(:user, %{email: "jim@mail.com"})
+      Factory.insert_list(3, :user)
+
+      assert Accounts.list_users(q: "jim@mail") == [user_1]
+    end
+
+    test "returns users with same name filtered by email" do
+      user_1 = Factory.insert(:user, %{email: "john_doe@mail.com"})
+      user_2 = Factory.insert(:user, %{email: "johnLee4592@mail.com"})
+      Factory.insert_list(3, :user)
+
+      assert Accounts.list_users(q: "JOHN") == sort_by_id([user_1, user_2])
+    end
+
+    test "returns users when name and email match with search" do
+      user_1 = Factory.insert(:user, %{name: "Ana Carolina"})
+      user_2 = Factory.insert(:user, %{name: "Carol Denvers"})
+      user_3 = Factory.insert(:user, %{email: "carol@mail.com"})
+      Factory.insert_list(3, :user)
+
+      assert Accounts.list_users(q: "carol") == sort_by_id([user_1, user_2, user_3])
+    end
+  end
+
+  defp sort_by_id(enumerable) do
+    Enum.sort(enumerable, fn a, b ->
+      a = Map.get(a, :id) || Map.get(a, "id")
+      b = Map.get(b, :id) || Map.get(b, "id")
+      a >= b
+    end)
+  end
 end

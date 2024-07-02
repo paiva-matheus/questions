@@ -1,6 +1,8 @@
 defmodule Questions.Accounts do
   @moduledoc "Use this module to register users, make logins, etc."
 
+  import Ecto.Query
+
   alias Questions.AccessControl.Guardian
   alias Questions.Accounts
   alias Questions.Accounts.User
@@ -54,6 +56,38 @@ defmodule Questions.Accounts do
     with {:ok, data} <- Ecto.Changeset.apply_action(changeset, :sign_in),
          {:ok, user} <- Accounts.get_active_user_by_email_and_password(data.email, data.password) do
       Guardian.encode_and_sign(user, %{}, ttl: {1, :week})
+    end
+  end
+
+  @spec get_user_by_token(String.t()) :: {:ok, User.t()} | {:error, :not_found}
+  def get_user_by_token(token) do
+    case Repo.get_by(User, token: token) do
+      %User{} = user -> {:ok, user}
+      nil -> {:error, :not_found}
+    end
+  end
+
+  @spec list_users(keyword()) :: list(User.t())
+  def list_users(filters) do
+    query =
+      from u in User,
+        as: :u,
+        order_by: [desc: u.id]
+
+    query
+    |> filter_by_name_or_email(filters)
+    |> Repo.all()
+  end
+
+  defp filter_by_name_or_email(%Ecto.Query{} = q, filters) do
+    case Keyword.fetch(filters, :q) do
+      {:ok, query} ->
+        name_or_email = "%#{query}%"
+
+        from [u: u] in q, where: ilike(u.name, ^name_or_email) or ilike(u.email, ^name_or_email)
+
+      :error ->
+        q
     end
   end
 end
