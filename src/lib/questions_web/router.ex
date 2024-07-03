@@ -5,8 +5,20 @@ defmodule QuestionsWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", QuestionsWeb do
+  pipeline :jwt_authentication do
+    plug(QuestionsWeb.AuthenticationPipeline)
+  end
+
+  scope "/", QuestionsWeb do
     pipe_through :api
+  end
+
+  scope "/", QuestionsWeb do
+    pipe_through([:api, :jwt_authentication])
+
+    # User and Accounts
+
+    resources("/accounts", AccountController, only: [:index, :create])
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
