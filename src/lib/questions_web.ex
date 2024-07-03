@@ -21,7 +21,7 @@ defmodule QuestionsWeb do
 
   def router do
     quote do
-      use Phoenix.Router, helpers: false
+      use Phoenix.Router
 
       # Import common connection and controller functions to use in pipelines
       import Plug.Conn
@@ -38,11 +38,12 @@ defmodule QuestionsWeb do
   def controller do
     quote do
       use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: QuestionsWeb.Layouts]
+        namespace: QuestionsWeb
 
       import Plug.Conn
       import QuestionsWeb.Gettext
+
+      alias QuestionsWeb.Router.Helpers, as: Routes
 
       unquote(verified_routes())
     end
@@ -54,6 +55,39 @@ defmodule QuestionsWeb do
         endpoint: QuestionsWeb.Endpoint,
         router: QuestionsWeb.Router,
         statics: QuestionsWeb.static_paths()
+    end
+  end
+
+  def view do
+    quote do
+      use Phoenix.View, root: "lib/questions_web/templates", namespace: QuestionsWeb
+
+      # Import convenience functions from controllers
+      import Phoenix.Controller,
+        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
+
+      unquote(view_helpers())
+    end
+  end
+
+  defp view_helpers do
+    quote do
+      # Import basic rendering functionality (render, render_layout, etc)
+      import Phoenix.View
+
+      import QuestionsWeb.ErrorHelpers
+      import QuestionsWeb.Gettext
+      alias QuestionsWeb.Router.Helpers, as: Routes
+
+      def render_nested_one(resource, view, template, assigns \\ %{}) do
+        if Ecto.assoc_loaded?(resource),
+          do: render_one(resource, view, template, assigns)
+      end
+
+      def render_nested_many(collection, view, template, assigns \\ %{}) do
+        if Ecto.assoc_loaded?(collection),
+          do: render_many(collection, view, template, assigns)
+      end
     end
   end
 

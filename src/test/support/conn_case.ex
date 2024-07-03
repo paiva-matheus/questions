@@ -28,6 +28,8 @@ defmodule QuestionsWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import QuestionsWeb.ConnCase
+
+      alias QuestionsWeb.Router.Helpers, as: Routes
     end
   end
 

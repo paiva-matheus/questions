@@ -15,10 +15,7 @@ config :questions,
 config :questions, QuestionsWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
-  render_errors: [
-    formats: [json: QuestionsWeb.ErrorJSON],
-    layout: false
-  ],
+  render_errors: [view: QuestionsWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Questions.PubSub,
   live_view: [signing_salt: "Ko1n2vjV"]
 
