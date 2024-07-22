@@ -14,10 +14,15 @@ defmodule QuestionsWeb.Router do
   end
 
   scope "/", QuestionsWeb do
+    pipe_through(:api)
+
+    post("/users/sign_in", UserController, :sign_in)
+  end
+
+  scope "/", QuestionsWeb do
     pipe_through([:api, :jwt_authentication])
 
     # User and Accounts
-
     resources("/accounts", AccountController, only: [:index, :create])
   end
 
