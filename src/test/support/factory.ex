@@ -10,7 +10,7 @@ defmodule Questions.Factory do
       token: nil,
       email: sequence(:email, &"user#{&1}@example.com"),
       encrypted_password: Bcrypt.hash_pwd_salt("12345678"),
-      role: sequence(:role, ["student", "monitor", "admin"])
+      role: sequence(:role, ["admin", "student", "monitor"])
     }
   end
 end
