@@ -1,10 +1,11 @@
-defmodule Questions.Question do
+defmodule Questions.Doubts.Question do
   @moduledoc false
 
   use Ecto.Schema
   import Ecto.Changeset
 
   alias Questions.Accounts.User
+  alias Questions.Doubts.Thread
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t(),
@@ -25,6 +26,7 @@ defmodule Questions.Question do
     field(:category, :string)
     field(:status, :string)
     belongs_to(:user, User)
+    has_one(:thread, Thread)
 
     timestamps()
   end
@@ -39,6 +41,19 @@ defmodule Questions.Question do
     |> foreign_key_constraint(:user_id)
     |> put_change(:status, "open")
     |> validate_inclusion(:category, ["technology", "engineering", "science", "others"])
+  end
+
+  @spec complete_changeset(t()) :: Ecto.Changeset.t()
+  def complete_changeset(%__MODULE__{status: "completed"} = question) do
+    question
+    |> change()
+    |> add_error(:status, "question is already completed")
+  end
+
+  @spec complete_changeset(t()) :: Ecto.Changeset.t()
+  def complete_changeset(%__MODULE__{} = question) do
+    question
+    |> change(status: "completed")
   end
 
   # |> validate_inclusion(:status, ["open", "in_progress", "completed"])
