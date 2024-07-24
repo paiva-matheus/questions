@@ -3,7 +3,7 @@ defmodule Questions.Factory do
   use ExMachina.Ecto, repo: Questions.Repo
 
   alias Questions.Accounts.User
-  alias Questions.Question
+  alias Questions.Doubts.Question
 
   def user_factory do
     %User{
@@ -21,7 +21,7 @@ defmodule Questions.Factory do
       description: sequence("some_description"),
       category: sequence(:category, ["technology", "engineering", "science", "others"]),
       status: sequence(:status, ["open", "in_progress", "completed"]),
-      user_id: Faker.UUID.v4()
+      user: build(:user)
     }
   end
 end
