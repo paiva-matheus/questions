@@ -5,7 +5,7 @@ defmodule Questions.Doubts.Question do
   import Ecto.Changeset
 
   alias Questions.Accounts.User
-  alias Questions.Doubts.Thread
+  alias Questions.Doubts.Answer
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t(),
@@ -26,7 +26,7 @@ defmodule Questions.Doubts.Question do
     field(:category, :string)
     field(:status, :string)
     belongs_to(:user, User)
-    has_one(:thread, Thread)
+    has_many(:answers, Answer)
 
     timestamps()
   end

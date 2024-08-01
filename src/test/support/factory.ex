@@ -4,6 +4,7 @@ defmodule Questions.Factory do
 
   alias Questions.Accounts.User
   alias Questions.Doubts.Question
+  alias Questions.Doubts.Answer
 
   def user_factory do
     %User{
@@ -21,6 +22,14 @@ defmodule Questions.Factory do
       description: sequence("some_description"),
       category: sequence(:category, ["technology", "engineering", "science", "others"]),
       status: sequence(:status, ["open", "in_progress", "completed"]),
+      user: build(:user)
+    }
+  end
+
+  def answer_factory do
+    %Answer{
+      content: Faker.Lorem.paragraph(),
+      question: build(:question),
       user: build(:user)
     }
   end
