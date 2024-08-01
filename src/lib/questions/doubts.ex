@@ -1,4 +1,5 @@
 defmodule Questions.Doubts do
+  alias Questions.Doubts.Answer
   alias Questions.Doubts.Question
   alias Questions.Repo
 
@@ -21,5 +22,13 @@ defmodule Questions.Doubts do
       {:uuid, :error} -> {:error, :not_found}
       {:question, nil} -> {:error, :not_found}
     end
+  end
+
+  @spec create_answer(map()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
+  def create_answer(%{} = attrs) do
+    %Answer{}
+    |> Answer.create_changeset(attrs)
+    |> Repo.insert()
   end
 end

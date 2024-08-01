@@ -28,7 +28,7 @@ defmodule Questions.Factory do
 
   def answer_factory do
     %Answer{
-      content: Faker.Lorem.paragraph(),
+      content: Faker.Lorem.sentence(10),
       question: build(:question),
       user: build(:user)
     }
