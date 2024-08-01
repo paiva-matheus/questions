@@ -77,7 +77,12 @@ defmodule Questions.DoubtsTest do
 
     test "returns an error when user_id doesn't exist" do
       question = Factory.insert(:question)
-      attrs = %{content: Faker.Lorem.sentence(10), user_id: Ecto.UUID.generate(), question_id: question.id}
+
+      attrs = %{
+        content: Faker.Lorem.sentence(10),
+        user_id: Ecto.UUID.generate(),
+        question_id: question.id
+      }
 
       assert {:error, %Ecto.Changeset{} = changeset} = Doubts.create_answer(attrs)
       assert %{user_id: ["does not exist"]} = errors_on(changeset)
@@ -85,7 +90,12 @@ defmodule Questions.DoubtsTest do
 
     test "returns an error when question_id doesn't exist" do
       user = Factory.insert(:user)
-      attrs = %{content: Faker.Lorem.sentence(10), user_id: user.id, question_id: Ecto.UUID.generate()}
+
+      attrs = %{
+        content: Faker.Lorem.sentence(10),
+        user_id: user.id,
+        question_id: Ecto.UUID.generate()
+      }
 
       assert {:error, %Ecto.Changeset{} = changeset} = Doubts.create_answer(attrs)
       assert %{question_id: ["does not exist"]} = errors_on(changeset)
