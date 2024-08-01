@@ -32,4 +32,26 @@ defmodule Questions.DoubtsTest do
       assert %{user_id: ["does not exist"]} = errors_on(changeset)
     end
   end
+
+  describe "get_question_by_id/1" do
+    test "returns error when question doesn't exist" do
+      assert Doubts.get_question_by_id(Ecto.UUID.generate()) == {:error, :not_found}
+    end
+
+    test "returns error when id is invalid" do
+      assert Doubts.get_question_by_id("invalid") == {:error, :not_found}
+    end
+
+    test "returns question" do
+      preload_fields = [:user]
+
+      question =
+        Factory.insert(:question)
+        |> Repo.reload!()
+        |> Repo.preload(preload_fields)
+
+      assert Doubts.get_question_by_id(question.id, preload_fields) ==
+               {:ok, question}
+    end
+  end
 end
