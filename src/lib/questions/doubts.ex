@@ -1,4 +1,5 @@
 defmodule Questions.Doubts do
+  alias Questions.Accounts.User
   alias Questions.Doubts.Answer
   alias Questions.Doubts.Question
   alias Questions.Repo
@@ -32,11 +33,27 @@ defmodule Questions.Doubts do
     |> Repo.insert()
   end
 
-  @spec complete_question(Question.t()) ::
-          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
-  def complete_question(%Question{} = question) do
-    question
-    |> Question.complete_changeset()
-    |> Repo.update()
+  @spec complete_question(Question.t(), User.t()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t() | {:error, :forbidden}}
+  def complete_question(%Question{} = question, %User{} = user) do
+    case can_user_complete_question?(user, question) do
+      true ->
+        question
+        |> Question.complete_changeset()
+        |> Repo.update()
+
+      false ->
+        {:error, :forbidden}
+    end
+  end
+
+  defp can_user_complete_question?(%User{role: "admin"}, _), do: true
+
+  defp can_user_complete_question?(user, question) do
+    if question.user_id == user.id do
+      true
+    else
+      false
+    end
   end
 end

@@ -133,19 +133,27 @@ defmodule Questions.DoubtsTest do
     end
   end
 
-  describe "complete_question/1" do
+  describe "complete_question/2" do
     test "complete question" do
-      question = Factory.insert(:question, status: "open")
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, status: "open", user: user)
 
-      assert {:ok, completed_question} = Doubts.complete_question(question)
+      assert {:ok, completed_question} = Doubts.complete_question(question, user)
       assert completed_question.status == "completed"
     end
 
     test "returns an error when question is completed" do
-      question = Factory.insert(:question, status: "completed")
-      assert {:error, %Ecto.Changeset{} = changeset} = Doubts.complete_question(question)
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, status: "completed", user: user)
+      assert {:error, %Ecto.Changeset{} = changeset} = Doubts.complete_question(question, user)
 
       assert %{status: ["question is already completed"]} = errors_on(changeset)
+    end
+
+    test "returns an error when user does not have permission" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, status: "completed")
+      assert {:error, :forbidden} = Doubts.complete_question(question, user)
     end
   end
 end
