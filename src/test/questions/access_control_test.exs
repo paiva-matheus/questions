@@ -59,5 +59,14 @@ defmodule Questions.AccessControlTest do
         assert :ok = AccessControl.authorize(user, :complete_question)
       end
     end
+
+    test "the roles that can delete answer" do
+      roles = ["admin", "monitor"]
+
+      for role <- roles do
+        user = Factory.build(:user, role: role)
+        assert :ok = AccessControl.authorize(user, :delete_answer)
+      end
+    end
   end
 end

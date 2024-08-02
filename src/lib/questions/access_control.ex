@@ -30,4 +30,7 @@ defmodule Questions.AccessControl do
 
   defp ok?(%User{} = user, :complete_question, _resource),
     do: user.role in ["admin", "student"]
+
+  defp ok?(%User{} = user, :delete_answer, _resource),
+    do: user.role in ["admin", "monitor"]
 end
