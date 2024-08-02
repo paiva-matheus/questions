@@ -31,4 +31,18 @@ defmodule QuestionsWeb.QuestionController do
       |> render("show.json", question: question)
     end
   end
+
+  def complete(conn, %{"question_id" => question_id}) do
+    user = AccessControl.Guardian.Plug.current_resource(conn)
+    preload_fields = [:user, answers: [:user]]
+
+    with :ok <- AccessControl.authorize(user, :complete_question),
+         {:ok, %Question{} = question} <- Doubts.get_question_by_id(question_id, preload_fields),
+         {:ok, %Question{} = completed_question} <-
+           Doubts.complete_question(question, user) do
+      conn
+      |> put_status(:ok)
+      |> render("show.json", question: completed_question)
+    end
+  end
 end

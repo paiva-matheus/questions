@@ -130,4 +130,74 @@ defmodule QuestionsWeb.QuestionControllerTest do
       assert json_response(conn, 401) == %{"errors" => %{"detail" => "Unauthorized"}}
     end
   end
+
+  describe "complete/2" do
+    setup [:complete_setup]
+
+    defp complete_setup(%{conn: conn}) do
+      user = Factory.insert(:user, role: "student")
+
+      conn =
+        conn
+        |> put_req_header("accept", "application/json")
+        |> authorize_request!(user)
+
+      %{conn: conn, user: user}
+    end
+
+    test "returns 200", %{conn: conn, user: user} do
+      question = Factory.insert(:question, status: "open", user: user)
+      answers = Factory.insert_list(10, :answer, question: question)
+      conn = patch(conn, Routes.question_question_path(conn, :complete, question.id))
+
+      assert json_response(conn, 200)["data"] == %{
+               "id" => question.id,
+               "title" => question.title,
+               "description" => question.description,
+               "category" => question.category,
+               "status" => "completed",
+               "answers" =>
+                 Enum.map(answers, fn answer ->
+                   %{
+                     "id" => answer.id,
+                     "content" => answer.content,
+                     "monitor" => %{
+                       "id" => answer.user.id,
+                       "name" => answer.user.name,
+                       "email" => answer.user.email
+                     }
+                   }
+                 end)
+             }
+    end
+
+    test "returns 404", %{conn: conn} do
+      conn = patch(conn, Routes.question_question_path(conn, :complete, Ecto.UUID.generate()))
+
+      assert json_response(conn, 404) == %{"errors" => %{"detail" => "Not Found"}}
+    end
+
+    test "returns 401", %{conn: conn} do
+      question = Factory.insert(:question, status: "open")
+
+      conn =
+        conn
+        |> put_req_header("authorization", "")
+        |> patch(Routes.question_question_path(conn, :complete, question.id))
+
+      assert json_response(conn, 401) == %{"errors" => %{"detail" => "Unauthorized"}}
+    end
+
+    test "returns 403", %{conn: conn} do
+      user = Factory.insert(:user, role: "monitor")
+      question = Factory.insert(:question, status: "open", user: user)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> patch(Routes.question_question_path(conn, :complete, question.id))
+
+      assert json_response(conn, 403) == %{"errors" => %{"detail" => "Forbidden"}}
+    end
+  end
 end
