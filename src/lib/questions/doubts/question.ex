@@ -15,7 +15,9 @@ defmodule Questions.Doubts.Question do
           status: String.t(),
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t(),
-          user_id: Ecto.UUID.t()
+          user_id: Ecto.UUID.t(),
+          user: User.t() | Ecto.Association.NotLoaded.t(),
+          answers: list(Answer.t())
         }
 
   @primary_key {:id, :binary_id, autogenerate: true}

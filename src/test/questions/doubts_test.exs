@@ -2,6 +2,7 @@ defmodule Questions.DoubtsTest do
   use Questions.DataCase, async: false
 
   alias Questions.Doubts
+  alias Questions.Doubts.Question
   alias Questions.Factory
 
   describe "create_question/1" do
@@ -52,6 +53,19 @@ defmodule Questions.DoubtsTest do
 
       assert Doubts.get_question_by_id(question.id, preload_fields) ==
                {:ok, question}
+    end
+
+    test "returns question with answers" do
+      preload_fields = [:user, :answers]
+      question = Factory.insert(:question)
+      Factory.insert_list(10, :answer, question: question)
+
+      expected_question =
+        Repo.get(Question, question.id)
+        |> Repo.preload(preload_fields)
+
+      assert Doubts.get_question_by_id(question.id, preload_fields) ==
+               {:ok, expected_question}
     end
   end
 
