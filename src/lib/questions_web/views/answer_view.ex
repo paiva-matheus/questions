@@ -1,7 +1,20 @@
 defmodule QuestionsWeb.AnswerView do
   use QuestionsWeb, :view
 
+  def render("show.json", %{answer: answer}) do
+    %{data: render_one(answer, __MODULE__, "answer.json")}
+  end
+
   def render("answer.json", %{answer: answer}) do
+    %{
+      id: answer.id,
+      content: answer.content,
+      monitor_id: answer.user_id,
+      question_id: answer.question_id
+    }
+  end
+
+  def render("question_answer.json", %{answer: answer}) do
     %{
       id: answer.id,
       content: answer.content,

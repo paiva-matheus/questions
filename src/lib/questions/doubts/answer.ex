@@ -47,12 +47,6 @@ defmodule Questions.Doubts.Answer do
          } = changeset
        ) do
     case Repo.get(User, user_id) do
-      %User{role: "monitor"} ->
-        changeset
-
-      %User{role: "admin"} ->
-        changeset
-
       %User{role: "student"} ->
         add_error(changeset, :user, "the user does not have permission to answer the question")
 

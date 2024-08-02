@@ -14,7 +14,7 @@ defmodule QuestionsWeb.QuestionView do
       description: question.description,
       category: question.category,
       status: question.status,
-      answers: render_nested_many(question.answers, AnswerView, "answer.json")
+      answers: render_nested_many(question.answers, AnswerView, "question_answer.json")
     }
   end
 end
