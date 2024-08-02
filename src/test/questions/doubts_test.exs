@@ -56,13 +56,15 @@ defmodule Questions.DoubtsTest do
     end
 
     test "returns question with answers" do
-      preload_fields = [:user, :answers]
+      preload_fields = [:user, answers: [:user]]
       question = Factory.insert(:question)
       Factory.insert_list(10, :answer, question: question)
 
       expected_question =
         Repo.get(Question, question.id)
         |> Repo.preload(preload_fields)
+
+      IO.inspect(expected_question)
 
       assert Doubts.get_question_by_id(question.id, preload_fields) ==
                {:ok, expected_question}
