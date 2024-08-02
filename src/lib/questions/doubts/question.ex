@@ -57,6 +57,4 @@ defmodule Questions.Doubts.Question do
     question
     |> change(status: "completed")
   end
-
-  # |> validate_inclusion(:status, ["open", "in_progress", "completed"])
 end

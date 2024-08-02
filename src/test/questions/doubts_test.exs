@@ -132,4 +132,20 @@ defmodule Questions.DoubtsTest do
                errors_on(changeset)
     end
   end
+
+  describe "complete_question/1" do
+    test "complete question" do
+      question = Factory.insert(:question, status: "open")
+
+      assert {:ok, completed_question} = Doubts.complete_question(question)
+      assert completed_question.status == "completed"
+    end
+
+    test "returns an error when question is completed" do
+      question = Factory.insert(:question, status: "completed")
+      assert {:error, %Ecto.Changeset{} = changeset} = Doubts.complete_question(question)
+
+      assert %{status: ["question is already completed"]} = errors_on(changeset)
+    end
+  end
 end

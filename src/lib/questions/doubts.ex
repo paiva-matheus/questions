@@ -31,4 +31,12 @@ defmodule Questions.Doubts do
     |> Answer.create_changeset(attrs)
     |> Repo.insert()
   end
+
+  @spec complete_question(Question.t()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
+  def complete_question(%Question{} = question) do
+    question
+    |> Question.complete_changeset()
+    |> Repo.update()
+  end
 end
