@@ -50,5 +50,14 @@ defmodule Questions.AccessControlTest do
         assert :ok = AccessControl.authorize(user, :create_answer)
       end
     end
+
+    test "the roles that can complete question" do
+      roles = ["admin", "student"]
+
+      for role <- roles do
+        user = Factory.build(:user, role: role)
+        assert :ok = AccessControl.authorize(user, :complete_question)
+      end
+    end
   end
 end
