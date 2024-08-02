@@ -28,5 +28,17 @@ defmodule Questions.Doubts.AnswerTest do
                content: ["can't be blank"]
              }
     end
+
+    test "validate role" do
+      user = Factory.insert(:user, role: "student")
+      attrs = Factory.params_with_assocs(:answer, user: user)
+      changeset = Answer.create_changeset(%Answer{}, attrs)
+
+      refute changeset.valid?
+
+      assert errors_on(changeset) == %{
+               user: ["the user does not have permission to answer the question"]
+             }
+    end
   end
 end

@@ -71,7 +71,8 @@ defmodule Questions.DoubtsTest do
 
   describe "create_answer/1" do
     test "create a new answer" do
-      attrs = Factory.params_with_assocs(:answer)
+      user = Factory.insert(:user, role: "monitor")
+      attrs = Factory.params_with_assocs(:answer, user: user)
 
       assert {:ok, created_answer} = Doubts.create_answer(attrs)
       assert created_answer.content == attrs.content
@@ -103,7 +104,7 @@ defmodule Questions.DoubtsTest do
     end
 
     test "returns an error when question_id doesn't exist" do
-      user = Factory.insert(:user)
+      user = Factory.insert(:user, role: "monitor")
 
       attrs = %{
         content: Faker.Lorem.sentence(10),
@@ -113,6 +114,22 @@ defmodule Questions.DoubtsTest do
 
       assert {:error, %Ecto.Changeset{} = changeset} = Doubts.create_answer(attrs)
       assert %{question_id: ["does not exist"]} = errors_on(changeset)
+    end
+
+    test "returns an error when user doesn't have permission to answer the question" do
+      question = Factory.insert(:question)
+      user = Factory.insert(:user, role: "student")
+
+      attrs = %{
+        content: Faker.Lorem.sentence(10),
+        user_id: user.id,
+        question_id: question.id
+      }
+
+      assert {:error, %Ecto.Changeset{} = changeset} = Doubts.create_answer(attrs)
+
+      assert %{user: ["the user does not have permission to answer the question"]} =
+               errors_on(changeset)
     end
   end
 end

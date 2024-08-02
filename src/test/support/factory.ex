@@ -30,7 +30,7 @@ defmodule Questions.Factory do
     %Answer{
       content: Faker.Lorem.sentence(10),
       question: build(:question),
-      user: build(:user)
+      user: build(:user, role: "monitor")
     }
   end
 end
