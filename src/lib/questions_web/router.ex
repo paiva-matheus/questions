@@ -24,7 +24,9 @@ defmodule QuestionsWeb.Router do
 
     # User and Accounts
     resources("/accounts", AccountController, only: [:index, :create])
-    resources("/questions", QuestionController, only: [:index, :create])
+
+    # Questions
+    resources("/questions", QuestionController, only: [:create, :show])
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

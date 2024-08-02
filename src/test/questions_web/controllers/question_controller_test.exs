@@ -75,4 +75,59 @@ defmodule QuestionsWeb.QuestionControllerTest do
              }
     end
   end
+
+  describe "show/2" do
+    setup [:show_setup]
+
+    defp show_setup(%{conn: conn}) do
+      user = Factory.insert(:user)
+
+      conn =
+        conn
+        |> put_req_header("accept", "application/json")
+        |> authorize_request!(user)
+
+      %{conn: conn}
+    end
+
+    test "returns 200", %{conn: conn} do
+      question = Factory.insert(:question)
+      answers = Factory.insert_list(10, :answer, question: question)
+      conn = get(conn, Routes.question_path(conn, :show, question.id))
+
+      assert json_response(conn, 200)["data"] == %{
+               "id" => question.id,
+               "title" => question.title,
+               "description" => question.description,
+               "category" => question.category,
+               "status" => question.status,
+               "answers" =>
+                 Enum.map(answers, fn answer ->
+                   %{
+                     "id" => answer.id,
+                     "content" => answer.content,
+                     "monitor" => %{
+                       "id" => answer.user.id,
+                       "name" => answer.user.name,
+                       "email" => answer.user.email
+                     }
+                   }
+                 end)
+             }
+    end
+
+    test "returns 404", %{conn: conn} do
+      conn = get(conn, Routes.question_path(conn, :show, Ecto.UUID.generate()))
+      assert json_response(conn, 404) == %{"errors" => %{"detail" => "Not Found"}}
+    end
+
+    test "returns 401", %{conn: conn} do
+      conn =
+        conn
+        |> put_req_header("authorization", "")
+        |> get(Routes.question_path(conn, :show, Ecto.UUID.generate()))
+
+      assert json_response(conn, 401) == %{"errors" => %{"detail" => "Unauthorized"}}
+    end
+  end
 end
