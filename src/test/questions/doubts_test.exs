@@ -2,6 +2,7 @@ defmodule Questions.DoubtsTest do
   use Questions.DataCase, async: false
 
   alias Questions.Doubts
+  alias Questions.Doubts.Answer
   alias Questions.Doubts.Question
   alias Questions.Factory
 
@@ -154,6 +155,37 @@ defmodule Questions.DoubtsTest do
       user = Factory.insert(:user, role: "student")
       question = Factory.insert(:question, status: "completed")
       assert {:error, :forbidden} = Doubts.complete_question(question, user)
+    end
+  end
+
+  describe "get_answer_by_id/1" do
+    test "returns error when answer doesn't exist" do
+      assert Doubts.get_answer_by_id(Ecto.UUID.generate()) == {:error, :not_found}
+    end
+
+    test "returns error when id is invalid" do
+      assert Doubts.get_answer_by_id("invalid") == {:error, :not_found}
+    end
+
+    test "returns answer" do
+      preload_fields = [:user]
+
+      answer =
+        Factory.insert(:answer)
+        |> Repo.reload!()
+        |> Repo.preload(preload_fields)
+
+      assert Doubts.get_answer_by_id(answer.id, preload_fields) ==
+               {:ok, answer}
+    end
+  end
+
+  describe "delete_answer/1" do
+    test "delete answer" do
+      answer = Factory.insert(:answer)
+
+      assert {:ok, deleted_answer} = Doubts.delete_answer(answer)
+      refute Repo.get(Answer, deleted_answer.id)
     end
   end
 end

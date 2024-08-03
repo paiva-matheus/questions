@@ -56,4 +56,23 @@ defmodule Questions.Doubts do
       false
     end
   end
+
+  @spec get_answer_by_id(Ecto.UUID.t(), keyword()) ::
+          {:ok, Answer.t()} | {:error, :not_found}
+  def get_answer_by_id(answer_id, preload_fields \\ []) do
+    with {:uuid, {:ok, answer_id}} <- {:uuid, Ecto.UUID.cast(answer_id)},
+         {:answer, %Answer{} = answer} <-
+           {:answer, Repo.get(Answer, answer_id)} do
+      {:ok, Repo.preload(answer, preload_fields)}
+    else
+      {:uuid, :error} -> {:error, :not_found}
+      {:answer, nil} -> {:error, :not_found}
+    end
+  end
+
+  @spec delete_answer(Answer.t()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset}
+  def delete_answer(%Answer{} = answer) do
+    Repo.delete(answer)
+  end
 end
