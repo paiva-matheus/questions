@@ -18,4 +18,16 @@ defmodule QuestionsWeb.AnswerController do
       |> render("show.json", answer: answer)
     end
   end
+
+  def delete(conn, %{"id" => answer_id}) do
+    user = AccessControl.Guardian.Plug.current_resource(conn)
+
+    with :ok <- AccessControl.authorize(user, :delete_answer),
+         {:ok, %Answer{} = answer} <-
+           Doubts.get_answer_by_id(answer_id),
+         {:ok, %Answer{} = _} <-
+           Doubts.delete_answer(answer) do
+      send_resp(conn, :no_content, "")
+    end
+  end
 end

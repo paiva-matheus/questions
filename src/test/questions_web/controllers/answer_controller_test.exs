@@ -70,4 +70,60 @@ defmodule QuestionsWeb.AnswerControllerTest do
              }
     end
   end
+
+  describe "delete/2" do
+    test "returns 204", %{conn: conn} do
+      user = Factory.insert(:user, role: "monitor")
+      answer = Factory.insert(:answer)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.answer_path(conn, :delete, answer.id))
+
+      assert response(conn, 204) == ""
+    end
+
+    test "returns 404", %{conn: conn} do
+      user = Factory.insert(:user, role: "monitor")
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.answer_path(conn, :delete, Ecto.UUID.generate()))
+
+      assert json_response(conn, 404) == %{
+               "errors" => %{
+                 "detail" => "Not Found"
+               }
+             }
+    end
+
+    test "returns 403 when user doesn't have permission", %{conn: conn} do
+      user = Factory.insert(:user, role: "student")
+      answer = Factory.insert(:answer)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.answer_path(conn, :delete, answer.id))
+
+      assert json_response(conn, 403) == %{
+               "errors" => %{
+                 "detail" => "Forbidden"
+               }
+             }
+    end
+
+    test "returns 401 for unauthorized request", %{conn: conn} do
+      answer = Factory.insert(:answer)
+      conn = delete(conn, Routes.answer_path(conn, :delete, answer.id))
+
+      assert json_response(conn, 401) == %{
+               "errors" => %{
+                 "detail" => "Unauthorized"
+               }
+             }
+    end
+  end
 end
