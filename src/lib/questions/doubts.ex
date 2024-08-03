@@ -1,4 +1,6 @@
 defmodule Questions.Doubts do
+  @moduledoc false
+
   alias Questions.Accounts.User
   alias Questions.Doubts.Answer
   alias Questions.Doubts.Question
