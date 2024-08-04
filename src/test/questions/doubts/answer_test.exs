@@ -67,4 +67,28 @@ defmodule Questions.Doubts.AnswerTest do
              }
     end
   end
+
+  describe "unfavorite_changeset/1" do
+    test "returns valid changeset" do
+      answer = Factory.insert(:answer, favorite: true)
+      changeset = Answer.unfavorite_changeset(answer)
+
+      assert changeset.valid?
+
+      assert changeset.changes == %{
+               favorite: false
+             }
+    end
+
+    test "validates if the answer can be unfavorited" do
+      answer = Factory.insert(:answer, favorite: false)
+      changeset = Answer.unfavorite_changeset(answer)
+
+      refute changeset.valid?
+
+      assert errors_on(changeset) == %{
+               answer: ["The answer is not favorited"]
+             }
+    end
+  end
 end

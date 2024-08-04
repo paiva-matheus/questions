@@ -48,6 +48,13 @@ defmodule Questions.Doubts.Answer do
     |> validate_favorite()
   end
 
+  @spec unfavorite_changeset(t()) :: Ecto.Changeset.t()
+  def unfavorite_changeset(%__MODULE__{} = answer) do
+    answer
+    |> change(favorite: false)
+    |> validate_unfavorite()
+  end
+
   defp validate_favorite(
          %Ecto.Changeset{
            data: %{
@@ -62,6 +69,11 @@ defmodule Questions.Doubts.Answer do
       _ -> add_error(changeset, :answer, "There is already a favorited answer for this question")
     end
   end
+
+  defp validate_unfavorite(%Ecto.Changeset{data: %{favorite: false}} = changeset),
+    do: add_error(changeset, :answer, "The answer is not favorited")
+
+  defp validate_unfavorite(%Ecto.Changeset{} = changeset), do: changeset
 
   defp validate_role(
          %Ecto.Changeset{
