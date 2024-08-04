@@ -3,7 +3,7 @@ defmodule Questions.Repo.Migrations.AddFavoriteFieldToAnswersTable do
 
   def change do
     alter table(:answers) do
-      add(:favorite, :boolean)
+      add(:favorite, :boolean, default: false)
     end
   end
 end

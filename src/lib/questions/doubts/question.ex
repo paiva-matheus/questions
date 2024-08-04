@@ -52,7 +52,6 @@ defmodule Questions.Doubts.Question do
     |> add_error(:status, "question is already completed")
   end
 
-  @spec complete_changeset(t()) :: Ecto.Changeset.t()
   def complete_changeset(%__MODULE__{} = question) do
     question
     |> change(status: "completed")

@@ -3,6 +3,7 @@ defmodule Questions.Doubts.Answer do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Questions.Accounts.User
   alias Questions.Doubts.Question
@@ -38,6 +39,28 @@ defmodule Questions.Doubts.Answer do
     |> foreign_key_constraint(:question_id)
     |> foreign_key_constraint(:user_id)
     |> validate_role()
+  end
+
+  @spec favorite_changeset(t()) :: Ecto.Changeset.t()
+  def favorite_changeset(%__MODULE__{} = answer) do
+    answer
+    |> change(favorite: true)
+    |> validate_favorite()
+  end
+
+  defp validate_favorite(
+         %Ecto.Changeset{
+           data: %{
+             question_id: question_id
+           }
+         } = changeset
+       ) do
+    case Repo.one(
+           from a in __MODULE__, where: a.question_id == ^question_id and a.favorite == true
+         ) do
+      nil -> changeset
+      _ -> add_error(changeset, :answer, "There is already a favorited answer for this question")
+    end
   end
 
   defp validate_role(

@@ -41,4 +41,30 @@ defmodule Questions.Doubts.AnswerTest do
              }
     end
   end
+
+  describe "favorite_changeset/1" do
+    test "returns valid changeset" do
+      answer = Factory.insert(:answer)
+      changeset = Answer.favorite_changeset(answer)
+
+      assert changeset.valid?
+
+      assert changeset.changes == %{
+               favorite: true
+             }
+    end
+
+    test "validates if the answer can be favorited" do
+      question = Factory.insert(:question)
+      Factory.insert(:answer, question: question, favorite: true)
+      answer = Factory.insert(:answer, question: question)
+      changeset = Answer.favorite_changeset(answer)
+
+      refute changeset.valid?
+
+      assert errors_on(changeset) == %{
+               answer: ["There is already a favorited answer for this question"]
+             }
+    end
+  end
 end
