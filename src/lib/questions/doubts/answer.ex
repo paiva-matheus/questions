@@ -23,6 +23,7 @@ defmodule Questions.Doubts.Answer do
     belongs_to(:question, Question)
     belongs_to(:user, User)
     field(:content, :string)
+    field(:favorite, :boolean)
 
     timestamps()
   end
