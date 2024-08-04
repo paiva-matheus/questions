@@ -188,4 +188,39 @@ defmodule Questions.DoubtsTest do
       refute Repo.get(Answer, deleted_answer.id)
     end
   end
+
+  describe "favorite_answer/1" do
+    test "favorite answer" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, user: user)
+      answer = Factory.insert(:answer, question: question)
+
+      assert {:ok, favorited_answer} = Doubts.favorite_answer(answer)
+      assert favorited_answer.favorite == true
+    end
+
+    test "returns an error when answer is already favorited" do
+      answer = Factory.insert(:answer, favorite: true)
+      assert {:error, %Ecto.Changeset{} = changeset} = Doubts.favorite_answer(answer)
+
+      assert %{answer: ["There is already a favorited answer for this question"]} =
+               errors_on(changeset)
+    end
+  end
+
+  describe "question_belong_to_requesting_user?/2" do
+    test "returns true when question belong to user" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, user: user)
+
+      assert Doubts.question_belong_to_requesting_user?(question, user)
+    end
+
+    test "returns false when question not belong to user" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question)
+
+      refute Doubts.question_belong_to_requesting_user?(question, user)
+    end
+  end
 end

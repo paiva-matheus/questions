@@ -77,4 +77,19 @@ defmodule Questions.Doubts do
   def delete_answer(%Answer{} = answer) do
     Repo.delete(answer)
   end
+
+  @spec favorite_answer(Answer.t()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
+  def favorite_answer(%Answer{} = answer) do
+    answer
+    |> Answer.favorite_changeset()
+    |> Repo.update()
+  end
+
+  @spec question_belong_to_requesting_user?(Question.t(), Answer.t()) :: :boolean
+  def question_belong_to_requesting_user?(%Question{user_id: question_user_id}, %User{id: user_id})
+      when user_id == question_user_id,
+      do: true
+
+  def question_belong_to_requesting_user?(_, _), do: false
 end
