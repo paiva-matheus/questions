@@ -10,7 +10,8 @@ defmodule QuestionsWeb.AnswerView do
       id: answer.id,
       content: answer.content,
       monitor_id: answer.user_id,
-      question_id: answer.question_id
+      question_id: answer.question_id,
+      favorite: answer.favorite
     }
   end
 

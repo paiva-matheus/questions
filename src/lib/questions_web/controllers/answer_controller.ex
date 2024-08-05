@@ -5,7 +5,7 @@ defmodule QuestionsWeb.AnswerController do
 
   alias Questions.AccessControl
   alias Questions.Doubts
-  alias Questions.Doubts.Answer
+  alias Questions.Doubts.{Answer, Question}
 
   def create(conn, params) do
     user = AccessControl.Guardian.Plug.current_resource(conn)
@@ -28,6 +28,22 @@ defmodule QuestionsWeb.AnswerController do
          {:ok, %Answer{} = _} <-
            Doubts.delete_answer(answer) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def favorite(conn, %{"answer_id" => answer_id}) do
+    user = AccessControl.Guardian.Plug.current_resource(conn)
+
+    with :ok <- AccessControl.authorize(user, :favorite_answer),
+         {:ok, %Answer{} = answer} <-
+           Doubts.get_answer_by_id(answer_id),
+         {:ok, %Question{} = question} <-
+           Doubts.get_question_by_id(answer.question_id),
+         true = Doubts.question_belong_to_requesting_user?(question, user),
+         {:ok, favorited_answer} <- Doubts.favorite_answer(answer) do
+      conn
+      |> put_status(:ok)
+      |> render("show.json", answer: favorited_answer)
     end
   end
 end

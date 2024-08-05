@@ -31,7 +31,9 @@ defmodule QuestionsWeb.Router do
     end
 
     # Answers
-    resources("/answers", AnswerController, only: [:create, :delete])
+    resources("/answers", AnswerController, only: [:create, :delete]) do
+      patch("/favorite", AnswerController, :favorite)
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
