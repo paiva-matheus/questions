@@ -33,6 +33,7 @@ defmodule QuestionsWeb.Router do
     # Answers
     resources("/answers", AnswerController, only: [:create, :delete]) do
       patch("/favorite", AnswerController, :favorite)
+      patch("/unfavorite", AnswerController, :unfavorite)
     end
   end
 

@@ -86,6 +86,14 @@ defmodule Questions.Doubts do
     |> Repo.update()
   end
 
+  @spec unfavorite_answer(Answer.t()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
+  def unfavorite_answer(%Answer{} = answer) do
+    answer
+    |> Answer.unfavorite_changeset()
+    |> Repo.update()
+  end
+
   @spec question_belong_to_requesting_user?(Question.t(), Answer.t()) :: :boolean
   def question_belong_to_requesting_user?(%Question{user_id: question_user_id}, %User{id: user_id})
       when user_id == question_user_id,

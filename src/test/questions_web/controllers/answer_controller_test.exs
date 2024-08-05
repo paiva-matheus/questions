@@ -184,4 +184,62 @@ defmodule QuestionsWeb.AnswerControllerTest do
              }
     end
   end
+
+  describe "unfavorite/2" do
+    test "returns 200", %{conn: conn} do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, user: user)
+      answer = Factory.insert(:answer, question: question, favorite: true)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> patch(Routes.answer_answer_path(conn, :unfavorite, answer.id))
+
+      response = json_response(conn, 200)["data"]
+      assert response["favorite"] == false
+    end
+
+    test "returns 404", %{conn: conn} do
+      user = Factory.insert(:user, role: "student")
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> patch(Routes.answer_answer_path(conn, :unfavorite, Ecto.UUID.generate()))
+
+      assert json_response(conn, 404) == %{
+               "errors" => %{
+                 "detail" => "Not Found"
+               }
+             }
+    end
+
+    test "returns 403 when user doesn't have permission", %{conn: conn} do
+      user = Factory.insert(:user, role: "monitor")
+      answer = Factory.insert(:answer)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> patch(Routes.answer_answer_path(conn, :unfavorite, answer.id))
+
+      assert json_response(conn, 403) == %{
+               "errors" => %{
+                 "detail" => "Forbidden"
+               }
+             }
+    end
+
+    test "returns 401 for unauthorized request", %{conn: conn} do
+      answer = Factory.insert(:answer)
+      conn = patch(conn, Routes.answer_answer_path(conn, :unfavorite, answer.id))
+
+      assert json_response(conn, 401) == %{
+               "errors" => %{
+                 "detail" => "Unauthorized"
+               }
+             }
+    end
+  end
 end

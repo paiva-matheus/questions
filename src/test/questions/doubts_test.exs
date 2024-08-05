@@ -208,6 +208,25 @@ defmodule Questions.DoubtsTest do
     end
   end
 
+  describe "unfavorite_answer/1" do
+    test "unfavorite answer" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, user: user)
+      answer = Factory.insert(:answer, question: question, favorite: true)
+
+      assert {:ok, unfavorited_answer} = Doubts.unfavorite_answer(answer)
+      assert unfavorited_answer.favorite == false
+    end
+
+    test "returns an error when answer is already favorited" do
+      answer = Factory.insert(:answer)
+      assert {:error, %Ecto.Changeset{} = changeset} = Doubts.unfavorite_answer(answer)
+
+      assert %{answer: ["The answer is not favorited"]} =
+               errors_on(changeset)
+    end
+  end
+
   describe "question_belong_to_requesting_user?/2" do
     test "returns true when question belong to user" do
       user = Factory.insert(:user, role: "student")
