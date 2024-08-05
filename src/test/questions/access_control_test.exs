@@ -68,5 +68,15 @@ defmodule Questions.AccessControlTest do
         assert :ok = AccessControl.authorize(user, :delete_answer)
       end
     end
+
+    test "students can favorite answer" do
+      user = Factory.build(:user, role: "student")
+      assert :ok = AccessControl.authorize(user, :favorite_answer)
+    end
+
+    test "students can unfavorite answer" do
+      user = Factory.build(:user, role: "student")
+      assert :ok = AccessControl.authorize(user, :unfavorite_answer)
+    end
   end
 end
