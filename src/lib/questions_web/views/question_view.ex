@@ -4,6 +4,13 @@ defmodule QuestionsWeb.QuestionView do
   alias QuestionsWeb.AnswerView
   alias QuestionsWeb.UserView
 
+  def render("index.json", %{questions: questions, pagination: pagination}) do
+    %{
+      pagination: pagination,
+      data: render_many(questions, __MODULE__, "question.json")
+    }
+  end
+
   def render("show.json", %{question: question}) do
     %{data: render_one(question, __MODULE__, "question.json")}
   end

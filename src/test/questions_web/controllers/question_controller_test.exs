@@ -2,6 +2,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
   use QuestionsWeb.ConnCase, async: true
 
   alias Questions.Factory
+  alias Questions.Repo
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -210,5 +211,195 @@ defmodule QuestionsWeb.QuestionControllerTest do
 
       assert json_response(conn, 403) == %{"errors" => %{"detail" => "Forbidden"}}
     end
+  end
+
+  describe "index/2" do
+    test "returns 200 with questions", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      expected_response_data =
+        Factory.insert_list(10, :question)
+        |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+        |> Enum.map(fn question ->
+          %{
+            "id" => question.id,
+            "title" => question.title,
+            "description" => question.description,
+            "category" => question.category,
+            "status" => question.status,
+            "answers" =>
+              Enum.map(question.answers, fn answer ->
+                %{
+                  "id" => answer.id,
+                  "content" => answer.content,
+                  "monitor" => %{
+                    "id" => answer.user.id,
+                    "name" => answer.user.name,
+                    "email" => answer.user.email
+                  }
+                }
+              end),
+            "user" => %{
+              "id" => question.user.id,
+              "name" => question.user.name,
+              "email" => question.user.email,
+              "role" => question.user.role
+            }
+          }
+        end)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index))
+
+      assert json_response(conn, 200)["data"] == expected_response_data
+    end
+
+    test "returns 200 with paginated result", %{conn: conn} do
+      user = Factory.insert(:user)
+      Factory.insert_list(30, :question)
+
+      expected_response_pagination = %{
+        "next_page" => "?per_page=10&page=3",
+        "previous_page" => "?per_page=10&page=1",
+        "total_pages" => 3,
+        "total_records" => 30
+      }
+
+      params = %{"per_page" => "10", "page" => "2"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert json_response(conn, 200)["pagination"] == expected_response_pagination
+    end
+
+    test "returns 200 with data filtered by student name", %{conn: conn} do
+      user = Factory.insert(:user)
+      Factory.insert_list(10, :question)
+
+      expected_question =
+        Factory.insert(:question, title: "Elixir")
+
+      params = %{"title" => "Elixir"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert %{"data" => questions} = json_response(conn, 200)
+      assert List.first(questions)["id"] == expected_question.id
+    end
+
+    test "returns 200 with data filtered by status", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      [_, _, expected_question] =
+        ["open", "in_progress", "completed"]
+        |> Enum.map(
+          &Factory.insert(:question,
+            status: &1
+          )
+        )
+
+      params = %{"status" => "completed"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert %{"data" => questions} = json_response(conn, 200)
+      assert List.first(questions)["id"] == expected_question.id
+    end
+
+    test "returns 200 with data filtered by category", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      [_, _, expected_question] =
+        ["technology", "engineering", "science"]
+        |> Enum.map(
+          &Factory.insert(:question,
+            category: &1
+          )
+        )
+
+      params = %{"category" => "science"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert %{"data" => questions} = json_response(conn, 200)
+      assert List.first(questions)["id"] == expected_question.id
+    end
+
+    test "returns 200 with data ordered by title", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      expected_questions =
+        ["React", "Java", "Elixir"]
+        |> Enum.map(&Factory.insert(:question, title: &1))
+
+      params = %{"order_by" => "title", "order" => "desc"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert %{"data" => questions} = json_response(conn, 200)
+      assert_lists(questions, expected_questions)
+    end
+
+    test "returns 200 with data ordered by status", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      expected_questions =
+        ["completed", "in_progress", "open"]
+        |> Enum.map(&Factory.insert(:question, status: &1))
+
+      params = %{"order_by" => "status", "order" => "asc"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert %{"data" => questions} = json_response(conn, 200)
+      assert_lists(questions, expected_questions)
+    end
+
+    test "returns 200 with data ordered by category", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      expected_questions =
+        ["technology", "science", "engineering"]
+        |> Enum.map(&Factory.insert(:question, category: &1))
+
+      params = %{"order_by" => "category", "order" => "desc"}
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> get(Routes.question_path(conn, :index), params)
+
+      assert %{"data" => questions} = json_response(conn, 200)
+      assert_lists(questions, expected_questions)
+    end
+  end
+
+  defp assert_lists(response_list, expected_list) do
+    Enum.with_index(response_list, fn response_data, index ->
+      expected_data = Enum.at(expected_list, index)
+      assert response_data["id"] == expected_data.id
+    end)
   end
 end

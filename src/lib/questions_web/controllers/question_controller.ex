@@ -7,6 +7,30 @@ defmodule QuestionsWeb.QuestionController do
   alias Questions.Doubts
   alias Questions.Doubts.Question
 
+  plug(QuestionsWeb.Plugs.PaginationPlug when action in [:index])
+  plug(QuestionsWeb.Plugs.OrdenationPlug when action in [:index])
+
+  plug(
+    QuestionsWeb.Plugs.SearchFilterPlug,
+    [
+      :title,
+      :status,
+      :category
+    ]
+    when action in [:index]
+  )
+
+  def index(conn, _) do
+    %{data: questions, pagination: pagination} =
+      Doubts.list_questions(
+        conn.assigns.search_filters,
+        conn.assigns.ordenation,
+        conn.assigns.pagination
+      )
+
+    render(conn, "index.json", questions: questions, pagination: pagination)
+  end
+
   def create(conn, params) do
     user = AccessControl.Guardian.Plug.current_resource(conn)
 
