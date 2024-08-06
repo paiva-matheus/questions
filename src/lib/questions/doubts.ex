@@ -1,11 +1,17 @@
 defmodule Questions.Doubts do
   @moduledoc false
 
+  import Ecto.Query
+
   alias Questions.Accounts.User
   alias Questions.Doubts.Answer
+  alias Questions.Doubts.Queries.FilterQuery
+  alias Questions.Doubts.Queries.OrderQuery
   alias Questions.Doubts.Question
+  alias Questions.Pagination
   alias Questions.Repo
 
+  ## Questions
   @spec create_question(map()) ::
           {:ok, Question.t()} | {:error, Ecto.Changeset.t()}
   def create_question(%{} = attrs) do
@@ -27,12 +33,21 @@ defmodule Questions.Doubts do
     end
   end
 
-  @spec create_answer(map()) ::
-          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
-  def create_answer(%{} = attrs) do
-    %Answer{}
-    |> Answer.create_changeset(attrs)
-    |> Repo.insert()
+  @spec list_questions(keyword(), keyword(), keyword()) :: %{
+          data: list(Question.t()),
+          pagination: Pagination.t()
+        }
+  def list_questions(search_filters, ordering, pagination) do
+    query =
+      from(q in Question,
+        as: :question,
+        preload: [:user, answers: [:user]]
+      )
+
+    query
+    |> FilterQuery.by(search_filters)
+    |> OrderQuery.by(ordering[:order_by], ordering[:order])
+    |> Pagination.paginate(pagination[:page], pagination[:per_page], search_filters)
   end
 
   @spec complete_question(Question.t(), User.t()) ::
@@ -57,6 +72,22 @@ defmodule Questions.Doubts do
     else
       false
     end
+  end
+
+  @spec question_belong_to_requesting_user?(Question.t(), Answer.t()) :: :boolean
+  def question_belong_to_requesting_user?(%Question{user_id: question_user_id}, %User{id: user_id})
+      when user_id == question_user_id,
+      do: true
+
+  def question_belong_to_requesting_user?(_, _), do: false
+
+  ## Answers
+  @spec create_answer(map()) ::
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}
+  def create_answer(%{} = attrs) do
+    %Answer{}
+    |> Answer.create_changeset(attrs)
+    |> Repo.insert()
   end
 
   @spec get_answer_by_id(Ecto.UUID.t(), keyword()) ::
@@ -93,11 +124,4 @@ defmodule Questions.Doubts do
     |> Answer.unfavorite_changeset()
     |> Repo.update()
   end
-
-  @spec question_belong_to_requesting_user?(Question.t(), Answer.t()) :: :boolean
-  def question_belong_to_requesting_user?(%Question{user_id: question_user_id}, %User{id: user_id})
-      when user_id == question_user_id,
-      do: true
-
-  def question_belong_to_requesting_user?(_, _), do: false
 end

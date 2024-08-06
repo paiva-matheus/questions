@@ -242,4 +242,130 @@ defmodule Questions.DoubtsTest do
       refute Doubts.question_belong_to_requesting_user?(question, user)
     end
   end
+
+  describe "list_questions/3" do
+    test "returns a list of questions" do
+      expected_questions =
+        Factory.insert_list(10, :question)
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+        |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+
+      assert %{data: questions} =
+               Doubts.list_questions([], [], page: 1, per_page: 10)
+
+      assert questions == expected_questions
+    end
+
+    test "paginate results" do
+      Factory.insert_list(30, :question)
+
+      expected_pagination = %{
+        next_page: "?per_page=10&page=3",
+        previous_page: "?per_page=10&page=1",
+        total_pages: 3,
+        total_records: 30
+      }
+
+      assert %{pagination: pagination} =
+               Doubts.list_questions([], [], page: 2, per_page: 10)
+
+      assert pagination == expected_pagination
+    end
+
+    test "filter by title" do
+      Factory.insert_list(10, :question)
+
+      expected_question =
+        Factory.insert(:question, title: "Is Elixir a functional language?")
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+
+      search_filters = [title: "Is Elixir a functional language?"]
+
+      assert %{data: questions} =
+               Doubts.list_questions(search_filters, [], page: 1, per_page: 10)
+
+      assert List.first(questions) == expected_question
+    end
+
+    test "filter by category" do
+      expected_questions =
+        Factory.insert_list(10, :question)
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+        |> Enum.filter(fn question ->
+          question.category == "technology"
+        end)
+        |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+
+      search_filters = [category: "technology"]
+
+      assert %{data: questions} =
+               Doubts.list_questions(search_filters, [], page: 1, per_page: 10)
+
+      assert questions == expected_questions
+    end
+
+    test "filter by status" do
+      [_, _, expected_question] =
+        ["open", "in_progress", "completed"]
+        |> Enum.map(&Factory.insert(:question, status: &1))
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+
+      search_filters = [status: "completed"]
+
+      assert %{data: questions} =
+               Doubts.list_questions(search_filters, [], page: 1, per_page: 10)
+
+      assert List.first(questions) == expected_question
+    end
+
+    test "order by question title" do
+      expected_questions =
+        Factory.insert_list(10, :question)
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+
+      ordering = [order_by: "title"]
+
+      assert %{data: questions} =
+               Doubts.list_questions([], ordering, page: 1, per_page: 10)
+
+      assert questions == expected_questions
+    end
+
+    test "order by question category" do
+      expected_questions =
+        ["technology", "engineering", "science"]
+        |> Enum.map(&Factory.insert(:question, category: &1))
+        |> Enum.sort_by(& &1.category, :asc)
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+
+      ordering = [order_by: "category"]
+
+      assert %{data: questions} =
+               Doubts.list_questions([], ordering, page: 1, per_page: 10)
+
+      assert questions == expected_questions
+    end
+
+    test "order by question status" do
+      expected_questions =
+        ["in_progress", "open", "completed"]
+        |> Enum.map(&Factory.insert(:question, status: &1))
+        |> Enum.sort_by(& &1.status, :asc)
+        |> Repo.reload()
+        |> Repo.preload([:user, answers: [:user]])
+
+      ordering = [order_by: "status"]
+
+      assert %{data: questions} =
+               Doubts.list_questions([], ordering, page: 1, per_page: 10)
+
+      assert questions == expected_questions
+    end
+  end
 end

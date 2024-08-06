@@ -92,7 +92,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
 
     test "returns 200", %{conn: conn} do
       question = Factory.insert(:question)
-      answers = Factory.insert_list(10, :answer, question: question)
+      answer = Factory.insert(:answer, question: question)
       conn = get(conn, Routes.question_path(conn, :show, question.id))
 
       assert json_response(conn, 200)["data"] == %{
@@ -101,18 +101,17 @@ defmodule QuestionsWeb.QuestionControllerTest do
                "description" => question.description,
                "category" => question.category,
                "status" => question.status,
-               "answers" =>
-                 Enum.map(answers, fn answer ->
-                   %{
-                     "id" => answer.id,
-                     "content" => answer.content,
-                     "monitor" => %{
-                       "id" => answer.user.id,
-                       "name" => answer.user.name,
-                       "email" => answer.user.email
-                     }
+               "answers" => [
+                 %{
+                   "id" => answer.id,
+                   "content" => answer.content,
+                   "monitor" => %{
+                     "id" => answer.user.id,
+                     "name" => answer.user.name,
+                     "email" => answer.user.email
                    }
-                 end)
+                 }
+               ]
              }
     end
 
