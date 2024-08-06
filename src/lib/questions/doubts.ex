@@ -91,8 +91,8 @@ defmodule Questions.Doubts do
   end
 
   defp is_admin_or_owner?(%User{} = user, %Question{} = question)
-      when user.id == question.user_id or user.role == "admin",
-      do: true
+       when user.id == question.user_id or user.role == "admin",
+       do: true
 
   defp is_admin_or_owner?(_, _), do: false
 

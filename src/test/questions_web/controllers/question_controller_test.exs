@@ -211,6 +211,18 @@ defmodule QuestionsWeb.QuestionControllerTest do
 
       assert json_response(conn, 403) == %{"errors" => %{"detail" => "Forbidden"}}
     end
+
+    test "returns 403 when student is not the owner", %{conn: conn} do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> patch(Routes.question_question_path(conn, :complete, question.id))
+
+      assert json_response(conn, 403) == %{"errors" => %{"detail" => "Forbidden"}}
+    end
   end
 
   describe "index/2" do
@@ -440,8 +452,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
              }
     end
 
-
-    test "returns 403 when student doesn't have permission", %{conn: conn} do
+    test "returns 403 when student is not the owner", %{conn: conn} do
       user = Factory.insert(:user, role: "student")
       question = Factory.insert(:question)
 
