@@ -369,12 +369,52 @@ defmodule Questions.DoubtsTest do
     end
   end
 
-  describe "delete_question/1" do
-    test "delete question" do
-      question = Factory.insert(:question)
+  describe "delete_question/2" do
+    test "delete question when user's role is student" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, user: user)
 
-      assert {:ok, deleted_question} = Doubts.delete_question(question)
+      assert {:ok, deleted_question} = Doubts.delete_question(question, user)
       refute Repo.get(Question, deleted_question.id)
     end
+
+    test "delete question when user's role is admin" do
+      user = Factory.insert(:user, role: "admin")
+      question = Factory.insert(:question)
+
+      assert {:ok, deleted_question} = Doubts.delete_question(question, user)
+      refute Repo.get(Question, deleted_question.id)
+    end
+
+    test "returns an error when user is not admin or owner" do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question)
+
+      assert {:error, :forbidden} = Doubts.delete_question(question, user)
+      assert Repo.get(Question, question.id)
+    end
   end
+
+  # describe "is_admin_or_owner?/2" do
+  #   test "returns true when question belong to user" do
+  #     user = Factory.insert(:user, role: "student")
+  #     question = Factory.insert(:question, user: user)
+
+  #     assert Doubts.is_admin_or_owner?(user, question)
+  #   end
+
+  #   test "returns true when user is admin" do
+  #     user = Factory.insert(:user, role: "admin")
+  #     question = Factory.insert(:question)
+
+  #     assert Doubts.is_admin_or_owner?(user, question)
+  #   end
+
+  #   test "returns false when question not belong to user" do
+  #     user = Factory.insert(:user, role: "student")
+  #     question = Factory.insert(:question)
+
+  #     refute Doubts.is_admin_or_owner?(user, question)
+  #   end
+  # end
 end

@@ -15,6 +15,13 @@ defmodule QuestionsWeb.FallbackController do
     |> render("403.json")
   end
 
+  def call(conn, {:error, :forbidden}) do
+    conn
+    |> put_status(403)
+    |> put_view(QuestionsWeb.ErrorView)
+    |> render("403.json")
+  end
+
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(404)

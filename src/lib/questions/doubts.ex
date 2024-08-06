@@ -74,18 +74,27 @@ defmodule Questions.Doubts do
     end
   end
 
-  @spec question_belong_to_requesting_user?(Question.t(), Answer.t()) :: :boolean
+  @spec question_belong_to_requesting_user?(Question.t(), User.t()) :: :boolean
   def question_belong_to_requesting_user?(%Question{user_id: question_user_id}, %User{id: user_id})
       when user_id == question_user_id,
       do: true
 
   def question_belong_to_requesting_user?(_, _), do: false
 
-  @spec delete_question(Question.t()) ::
+  @spec delete_question(Question.t(), User.t()) ::
           {:ok, Question.t()} | {:error, Ecto.Changeset}
-  def delete_question(%Question{} = question) do
-    Repo.delete(question)
+  def delete_question(%Question{} = question, %User{} = user) do
+    case is_admin_or_owner?(user, question) do
+      true -> Repo.delete(question)
+      false -> {:error, :forbidden}
+    end
   end
+
+  defp is_admin_or_owner?(%User{} = user, %Question{} = question)
+      when user.id == question.user_id or user.role == "admin",
+      do: true
+
+  defp is_admin_or_owner?(_, _), do: false
 
   ## Answers
   @spec create_answer(map()) ::
