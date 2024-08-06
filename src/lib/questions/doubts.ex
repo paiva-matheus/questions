@@ -81,6 +81,12 @@ defmodule Questions.Doubts do
 
   def question_belong_to_requesting_user?(_, _), do: false
 
+  @spec delete_question(Question.t()) ::
+          {:ok, Question.t()} | {:error, Ecto.Changeset}
+  def delete_question(%Question{} = question) do
+    Repo.delete(question)
+  end
+
   ## Answers
   @spec create_answer(map()) ::
           {:ok, Answer.t()} | {:error, Ecto.Changeset.t()}

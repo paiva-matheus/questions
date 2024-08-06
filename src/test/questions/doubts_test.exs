@@ -368,4 +368,13 @@ defmodule Questions.DoubtsTest do
       assert questions == expected_questions
     end
   end
+
+  describe "delete_question/1" do
+    test "delete question" do
+      question = Factory.insert(:question)
+
+      assert {:ok, deleted_question} = Doubts.delete_question(question)
+      refute Repo.get(Question, deleted_question.id)
+    end
+  end
 end
