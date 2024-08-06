@@ -26,7 +26,7 @@ defmodule QuestionsWeb.Router do
     resources("/accounts", AccountController, only: [:index, :create])
 
     # Questions
-    resources("/questions", QuestionController, only: [:index, :create, :show]) do
+    resources("/questions", QuestionController, only: [:index, :create, :show, :delete]) do
       patch("/complete", QuestionController, :complete)
     end
 

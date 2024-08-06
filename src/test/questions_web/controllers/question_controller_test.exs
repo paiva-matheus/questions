@@ -396,6 +396,79 @@ defmodule QuestionsWeb.QuestionControllerTest do
     end
   end
 
+  describe "delete/2" do
+    test "returns 204", %{conn: conn} do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question, user: user)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.question_path(conn, :delete, question.id))
+
+      assert response(conn, 204) == ""
+    end
+
+    test "returns 404", %{conn: conn} do
+      user = Factory.insert(:user, role: "admin")
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.question_path(conn, :delete, Ecto.UUID.generate()))
+
+      assert json_response(conn, 404) == %{
+               "errors" => %{
+                 "detail" => "Not Found"
+               }
+             }
+    end
+
+    test "returns 403 when user doesn't have permission", %{conn: conn} do
+      user = Factory.insert(:user, role: "monitor")
+      question = Factory.insert(:question)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.question_path(conn, :delete, question.id))
+
+      assert json_response(conn, 403) == %{
+               "errors" => %{
+                 "detail" => "Forbidden"
+               }
+             }
+    end
+
+
+    test "returns 403 when student doesn't have permission", %{conn: conn} do
+      user = Factory.insert(:user, role: "student")
+      question = Factory.insert(:question)
+
+      conn =
+        conn
+        |> authorize_request!(user)
+        |> delete(Routes.question_path(conn, :delete, question.id))
+
+      assert json_response(conn, 403) == %{
+               "errors" => %{
+                 "detail" => "Forbidden"
+               }
+             }
+    end
+
+    test "returns 401 for unauthorized request", %{conn: conn} do
+      question = Factory.insert(:question)
+      conn = delete(conn, Routes.question_path(conn, :delete, question.id))
+
+      assert json_response(conn, 401) == %{
+               "errors" => %{
+                 "detail" => "Unauthorized"
+               }
+             }
+    end
+  end
+
   defp assert_lists(response_list, expected_list) do
     Enum.with_index(response_list, fn response_data, index ->
       expected_data = Enum.at(expected_list, index)
