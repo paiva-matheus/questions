@@ -111,7 +111,13 @@ defmodule QuestionsWeb.QuestionControllerTest do
                      "email" => answer.user.email
                    }
                  }
-               ]
+               ],
+               "user" => %{
+                 "id" => question.user.id,
+                 "name" => question.user.name,
+                 "email" => question.user.email,
+                 "role" => question.user.role
+               }
              }
     end
 
@@ -166,7 +172,13 @@ defmodule QuestionsWeb.QuestionControllerTest do
                        "email" => answer.user.email
                      }
                    }
-                 end)
+                 end),
+               "user" => %{
+                 "id" => question.user.id,
+                 "name" => question.user.name,
+                 "email" => question.user.email,
+                 "role" => question.user.role
+               }
              }
     end
 

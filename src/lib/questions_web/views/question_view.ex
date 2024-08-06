@@ -2,6 +2,7 @@ defmodule QuestionsWeb.QuestionView do
   use QuestionsWeb, :view
 
   alias QuestionsWeb.AnswerView
+  alias QuestionsWeb.UserView
 
   def render("show.json", %{question: question}) do
     %{data: render_one(question, __MODULE__, "question.json")}
@@ -14,7 +15,8 @@ defmodule QuestionsWeb.QuestionView do
       description: question.description,
       category: question.category,
       status: question.status,
-      answers: render_nested_many(question.answers, AnswerView, "question_answer.json")
+      answers: render_nested_many(question.answers, AnswerView, "question_answer.json"),
+      user: render_nested_one(question.user, UserView, "user.json")
     }
   end
 end
