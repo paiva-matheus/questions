@@ -3,9 +3,9 @@ defmodule Questions.PaginationTest do
 
   import Ecto.Query
 
+  alias Questions.Doubts.Question
   alias Questions.Factory
   alias Questions.Pagination
-  alias Questions.Doubts.Question
 
   describe "paginate" do
     test "returns pagination when not exists previous page" do

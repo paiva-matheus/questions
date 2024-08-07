@@ -3,8 +3,8 @@ defmodule Questions.Doubts.Queries.OrderQueryTest do
 
   import Ecto.Query
 
-  alias Questions.Doubts.Question
   alias Questions.Doubts.Queries.OrderQuery
+  alias Questions.Doubts.Question
 
   @q from q in Question, as: :question
 

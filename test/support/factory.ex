@@ -3,8 +3,8 @@ defmodule Questions.Factory do
   use ExMachina.Ecto, repo: Questions.Repo
 
   alias Questions.Accounts.User
-  alias Questions.Doubts.Question
   alias Questions.Doubts.Answer
+  alias Questions.Doubts.Question
 
   def user_factory do
     %User{

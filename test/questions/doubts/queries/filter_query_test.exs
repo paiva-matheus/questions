@@ -3,8 +3,8 @@ defmodule Questions.Doubts.Queries.FilterQueryTest do
 
   import Ecto.Query
 
-  alias Questions.Doubts.Question
   alias Questions.Doubts.Queries.FilterQuery
+  alias Questions.Doubts.Question
 
   @q from q in Question, as: :question
 

@@ -84,17 +84,17 @@ defmodule Questions.Doubts do
   @spec delete_question(Question.t(), User.t()) ::
           {:ok, Question.t()} | {:error, Ecto.Changeset}
   def delete_question(%Question{} = question, %User{} = user) do
-    case user_is_admin_or_owner?(user, question) do
+    case is_admin_or_owner?(user, question) do
       true -> Repo.delete(question)
       false -> {:error, :forbidden}
     end
   end
 
-  defp user_is_admin_or_owner?(%User{} = user, %Question{} = question)
+  defp is_admin_or_owner?(%User{} = user, %Question{} = question)
        when user.id == question.user_id or user.role == "admin",
        do: true
 
-  defp user_is_admin_or_owner?(_, _), do: false
+  defp is_admin_or_owner?(_, _), do: false
 
   ## Answers
   @spec create_answer(map()) ::

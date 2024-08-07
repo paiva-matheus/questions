@@ -77,7 +77,7 @@
           # Priority values are: `low, normal, high, higher`
           #
           {Credo.Check.Design.AliasUsage,
-           [priority: :low, if_nested_deeper_than: 2, if_called_more_often_than: 0]},
+           [priority: :low, if_nested_deeper_than: 2, if_called_more_often_than: 6]},
           # You can also customize the exit_status of each check.
           # If you don't want TODO comments to cause `mix credo` to fail, just
           # set this value to 0 (zero).
@@ -98,7 +98,6 @@
           {Credo.Check.Readability.ParenthesesInCondition, []},
           {Credo.Check.Readability.ParenthesesOnZeroArityDefs, []},
           {Credo.Check.Readability.PipeIntoAnonymousFunctions, []},
-          {Credo.Check.Readability.PredicateFunctionNames, []},
           {Credo.Check.Readability.PreferImplicitTry, []},
           {Credo.Check.Readability.RedundantBlankLines, []},
           {Credo.Check.Readability.Semicolons, []},
@@ -196,7 +195,8 @@
           {Credo.Check.Warning.LeakyEnvironment, []},
           {Credo.Check.Warning.MapGetUnsafePass, []},
           {Credo.Check.Warning.MixEnv, []},
-          {Credo.Check.Warning.UnsafeToAtom, []}
+          {Credo.Check.Warning.UnsafeToAtom, []},
+          {Credo.Check.Readability.PredicateFunctionNames, []},
 
           # {Credo.Check.Refactor.MapInto, []},
 
