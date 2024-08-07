@@ -1,13 +1,37 @@
 # Questions
 
-To start your Phoenix server:
+## Getting started
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+* Running the phoenix web server: `docker compose up web`
+* Access the docker container `docker compose run --rm web bash`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+**To test your application:**
+
+* Access the docker container `docker compose run --rm test bash`
+* Run ExUnit for staled tests `mix test --stale`
+* Test coverage: `mix coveralls`
+
+**Static analysis, linter and security checker**
+
+* Static analysis with **credo**: `mix credo --strict`
+* Format your code with: `mix format`
+* Check if your code is formatted: `mix format --check-formatted`
+* Security analysis: `mix sobelow`
+
+## Directories structure
+
+* config/: Runtime configuration for the mix application
+* lib/: Source code of our application
+* lib/teaching/: Domain code
+* lib/teaching_web/: Application code to handle HTTP communication
+* test/: ExUnit test suite
+* test/support/: This directory usually contains helpers and fixtures modules
+* priv/: Code that isn't used in runtime, like database migrations, seeds and scripts
+* priv/migrations/: Database structure migrations. We don't migrate any kind of data here
+* deps/: Directory with all dependencies downloaded by `mix deps.get`
+* _build/: Compiled code by `mix compile`
 
 ## Learn more
 
