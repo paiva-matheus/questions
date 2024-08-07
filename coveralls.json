@@ -1,0 +1,23 @@
+{
+  "coverage_options": {
+    "minimum_coverage": 96
+  },
+  "skip_files": [
+    "lib/questions/application.ex",
+    "lib/questions/health_checker.ex",
+    "lib/questions/mailer.ex",
+    "lib/questions/release_tasks.ex",
+    "lib/questions/repo.ex",
+    "lib/questions_web.ex",
+    "lib/questions_web/router.ex",
+    "lib/questions_web/telemetry.ex",
+    "lib/questions_web/endpoint.ex",
+    "lib/questions_web/gettext.ex",
+    "lib/questions_web/plugs/authentication_pipeline.ex",
+    "lib/questions_web/error_helpers.ex",
+    "test/support/data_case.ex",
+    "test/support/conn_case.ex",
+    "test/support/factory.ex",
+    "config/"
+  ]
+}

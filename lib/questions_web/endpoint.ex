@@ -4,9 +4,7 @@ defmodule QuestionsWeb.Endpoint do
   plug CORSPlug,
     origin: [
       "http://localhost:3000",
-      "http://localhost:5173",
-      ~r/https?.*kenzie\d?\.com.br$/,
-      ~r/https?.*student-portal-ui.vercel.app$/
+      "http://localhost:5173"
     ]
 
   # The session will be stored in the cookie and signed,

@@ -1,0 +1,21 @@
+# https://hub.docker.com/_/elixir/
+FROM elixir:1.16.1
+
+
+# init
+RUN mix local.hex --force && \
+  mix archive.install --force hex phx_new 1.7.11 && \
+  apt-get update && \
+  curl -sL https://deb.nodesource.com/setup_12.x | bash && \
+  apt-get install -y apt-utils && \
+  apt-get install -y nodejs && \
+  apt-get install -y build-essential && \
+  apt-get install -y inotify-tools && \
+  mix local.rebar --force   
+
+COPY . /app
+ENV MIX_ENV=dev PORT=4000 
+
+WORKDIR /app
+EXPOSE 4000
+CMD ["sh", "-c", "mix do ecto.create, ecto.migrate; mix phx.server"]

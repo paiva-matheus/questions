@@ -9,7 +9,8 @@ defmodule Questions.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
@@ -53,7 +54,8 @@ defmodule Questions.MixProject do
       {:mock, "~> 0.3", only: :test},
       {:faker, "~> 0.18"},
       {:bcrypt_elixir, "~> 3.0"},
-      {:guardian, "~> 2.2"}
+      {:guardian, "~> 2.2"},
+      {:excoveralls, "~> 0.14", only: :test}
     ]
   end
 

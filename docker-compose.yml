@@ -1,35 +1,75 @@
-version: "3"
+x-service-defaults: &service-defaults
+  build:
+    context: .
+    dockerfile: Dockerfile-dev
+  volumes:
+    - .:/app
+    - "/build:/app/_build"
+    - "/deps:/app/deps"
+  ports:
+    - "4000:4000"
+  depends_on:
+    - db
+    - rabbitmq
 
 services:
   web:
-    build: .
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./src:/app
+    <<: *service-defaults
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=db
+      - PHX_SERVER=true
+      - MIX_ENV=dev
+      - DATABASE_HOST=questions-db
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=questions
+      - RABBITMQ_HOST=questions-rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - GUARDIAN_TOKEN=3UDQu8cbvgvSGsOPTAQcpSh2FbM6yPZ71yDilpBocsmrMMTC2zjOjNrLyrJ9PCKu
+      - TIMEZONE=America/Sao_Paulo
     depends_on:
       - db
+      - rabbitmq
+
+    networks:
+      default:
+        aliases:
+          - questions-web
+
   test:
-    build: .
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./src:/app
+    <<: *service-defaults
     command: mix do deps.get --only, coveralls --trace --color
     environment:
       - MIX_ENV=test
-      - DATABASE_HOST=db
+      - DATABASE_HOST=questions-db
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=postgres
-      - DATABASE_NAME=questions_test
+      - DATABASE_NAME=questions-test
+      - GUARDIAN_TOKEN=3UDQu8cbvgvSGsOPTAQcpSh2FbM6yPZ71yDilpBocsmrMMTC2zjOjNrLyrJ9PCKu
+      - TIMEZONE=America/Sao_Paulo
+  ci-test:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    volumes:
+      - .:/app
+    ports:
+      - "4008:4008"
+    depends_on:
+      - db
+      - rabbitmq
+    command: mix do deps.get --only, coveralls --trace --color
+    environment:
+      - MIX_ENV=test
+      - DATABASE_HOST=questions-db
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=questions-ci-test
+      - GUARDIAN_TOKEN=3UDQu8cbvgvSGsOPTAQcpSh2FbM6yPZ71yDilpBocsmrMMTC2zjOjNrLyrJ9PCKu
+      - TIMEZONE=America/Sao_Paulo
   db:
     image: postgres:12-alpine
     environment:
-      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5403:5432"
@@ -37,3 +77,22 @@ services:
       default:
         aliases:
           - questions-db
+
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    ports:
+      - "5601:5672"
+      - "15601:15672"
+    networks:
+      default:
+        aliases:
+          - questions-rabbitmq
+
+volumes:
+  build:
+  deps:
+
+
+networks:
+  default:
+    name: questions

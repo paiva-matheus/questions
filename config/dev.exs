@@ -4,8 +4,8 @@ import Config
 config :questions, Questions.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "db",
-  database: "questions_dev",
+  hostname: "questions-db",
+  database: "questions",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
