@@ -51,7 +51,7 @@ defmodule Questions.Doubts do
   end
 
   @spec complete_question(Question.t(), User.t()) ::
-          {:ok, Answer.t()} | {:error, Ecto.Changeset.t() | {:error, :forbidden}}
+          {:ok, Answer.t()} | {:error, Ecto.Changeset.t()} | {:error, :forbidden}
   def complete_question(%Question{} = question, %User{} = user) do
     case can_user_complete_question?(user, question) do
       true ->
@@ -95,6 +95,15 @@ defmodule Questions.Doubts do
        do: true
 
   defp is_admin_or_owner?(_, _), do: false
+
+  @spec start_question(Question.t()) :: {:ok, Question.t()}
+  def start_question(%Question{status: "open"} = question) do
+    question
+    |> Question.start_changeset()
+    |> Repo.update()
+  end
+
+  def start_question(%Question{} = question), do: {:ok, question}
 
   ## Answers
   @spec create_answer(map()) ::

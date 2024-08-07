@@ -395,26 +395,18 @@ defmodule Questions.DoubtsTest do
     end
   end
 
-  # describe "is_admin_or_owner?/2" do
-  #   test "returns true when question belong to user" do
-  #     user = Factory.insert(:user, role: "student")
-  #     question = Factory.insert(:question, user: user)
+  describe "start_question/2" do
+    test "start question when question is open" do
+      question = Factory.insert(:question, status: "open")
 
-  #     assert Doubts.is_admin_or_owner?(user, question)
-  #   end
+      assert {:ok, started_question} = Doubts.start_question(question)
+      assert started_question.status == "in_progress"
+    end
 
-  #   test "returns true when user is admin" do
-  #     user = Factory.insert(:user, role: "admin")
-  #     question = Factory.insert(:question)
+    test "returns ok when question is not open" do
+      question = Factory.insert(:question, status: "completed")
 
-  #     assert Doubts.is_admin_or_owner?(user, question)
-  #   end
-
-  #   test "returns false when question not belong to user" do
-  #     user = Factory.insert(:user, role: "student")
-  #     question = Factory.insert(:question)
-
-  #     refute Doubts.is_admin_or_owner?(user, question)
-  #   end
-  # end
+      assert {:ok, _} = Doubts.start_question(question)
+    end
+  end
 end
