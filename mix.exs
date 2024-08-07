@@ -55,7 +55,8 @@ defmodule Questions.MixProject do
       {:faker, "~> 0.18"},
       {:bcrypt_elixir, "~> 3.0"},
       {:guardian, "~> 2.2"},
-      {:excoveralls, "~> 0.14", only: :test}
+      {:excoveralls, "~> 0.14", only: :test},
+      {:sobelow, ">= 0.0.0", only: :test}
     ]
   end
 

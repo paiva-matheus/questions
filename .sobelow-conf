@@ -1,0 +1,12 @@
+[
+  verbose: true,
+  private: false,
+  skip: false,
+  router: "lib/questions_web/router.ex",
+  exit: "high",
+  format: "txt",
+  out: "",
+  threshold: "low",
+  ignore: ["Config.HTTPS"],
+  ignore_files: [""]
+]
