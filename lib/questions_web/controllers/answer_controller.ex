@@ -12,7 +12,11 @@ defmodule QuestionsWeb.AnswerController do
 
     with :ok <- AccessControl.authorize(user, :create_answer),
          {:ok, %Answer{} = answer} <-
-           Doubts.create_answer(params) do
+           Doubts.create_answer(params),
+         {:ok, %Question{} = question} <-
+           Doubts.get_question_by_id(answer.question_id),
+         {:ok, _} <-
+           Doubts.start_question(question) do
       conn
       |> put_status(:created)
       |> render("show.json", answer: answer)

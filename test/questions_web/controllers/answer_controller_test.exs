@@ -1,7 +1,9 @@
 defmodule QuestionsWeb.AnswerControllerTest do
   use QuestionsWeb.ConnCase, async: true
 
+  alias Questions.Doubts.Question
   alias Questions.Factory
+  alias Questions.Repo
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -10,7 +12,7 @@ defmodule QuestionsWeb.AnswerControllerTest do
   describe "create/2" do
     test "returns 201 with created question", %{conn: conn} do
       user = Factory.insert(:user, role: "monitor")
-      question = Factory.insert(:question)
+      question = Factory.insert(:question, status: "open")
 
       params = %{
         "content" => "Answer for the question",
@@ -26,6 +28,8 @@ defmodule QuestionsWeb.AnswerControllerTest do
       response = json_response(conn, 201)["data"]
 
       assert response["content"] == params["content"]
+      started_question = Repo.get(Question, question.id)
+      assert started_question.status == "in_progress"
     end
 
     test "returns 403 when user doesn't have permission", %{conn: conn} do
