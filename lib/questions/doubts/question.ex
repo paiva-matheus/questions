@@ -56,4 +56,19 @@ defmodule Questions.Doubts.Question do
     question
     |> change(status: "completed")
   end
+
+  @spec start_changeset(t()) :: Ecto.Changeset.t()
+  def start_changeset(%__MODULE__{status: "open"} = question) do
+    question
+    |> change(status: "in_progress")
+  end
+
+  def start_changeset(%__MODULE__{} = question) do
+    changeset = change(question)
+
+    case question.status do
+      "in_progress" -> add_error(changeset, :status, "question is already in progress")
+      "completed" -> add_error(changeset, :status, "question is completed")
+    end
+  end
 end
