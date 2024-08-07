@@ -13,7 +13,7 @@ config :questions,
 
 # Configures the endpoint
 config :questions, QuestionsWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "0.0.0.0"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [view: QuestionsWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Questions.PubSub,

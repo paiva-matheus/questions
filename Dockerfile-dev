@@ -1,7 +1,6 @@
 # https://hub.docker.com/_/elixir/
 FROM elixir:1.16.1
 
-
 # init
 RUN mix local.hex --force && \
   mix archive.install --force hex phx_new 1.7.11 && \
@@ -14,7 +13,7 @@ RUN mix local.hex --force && \
   mix local.rebar --force   
 
 COPY . /app
-ENV MIX_ENV=dev PORT=4000 
+ENV MIX_ENV=dev PORT=4000
 
 WORKDIR /app
 EXPOSE 4000
