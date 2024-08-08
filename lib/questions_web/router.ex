@@ -32,8 +32,7 @@ defmodule QuestionsWeb.Router do
     pipe_through([:api, :jwt_authentication])
 
     # Questions
-    resources("/questions", QuestionController, only: [:index, :create, :show]) do
-      delete("", QuestionController, :delete_question)
+    resources("/questions", QuestionController, only: [:index, :create, :show, :delete]) do
       patch("/complete", QuestionController, :complete)
     end
 

@@ -13,6 +13,46 @@
       "title": "Questions",
       "type": "array"
     },
+    "User": {
+      "description": "A single user",
+      "example": {
+        "email": "dwight@mail.com",
+        "id": "uuid",
+        "name": "Dwight",
+        "role": "admin"
+      },
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "name": {
+          "description": "User name",
+          "type": "string"
+        },
+        "role": {
+          "description": "User role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "User",
+      "type": "object"
+    },
+    "Users": {
+      "description": "A collection of Users",
+      "items": {
+        "$ref": "#/definitions/User"
+      },
+      "title": "Users",
+      "type": "array"
+    },
     "Question": {
       "description": "A single question",
       "example": {
@@ -114,38 +154,6 @@
       "title": "Create Question Model",
       "type": "object"
     },
-    "User": {
-      "description": "A single user",
-      "example": {
-        "email": "dwight@mail.com",
-        "id": "uuid",
-        "name": "Dwight",
-        "role": "admin"
-      },
-      "properties": {
-        "email": {
-          "description": "User email",
-          "type": "string"
-        },
-        "id": {
-          "description": "Unique identifier",
-          "type": "string"
-        },
-        "name": {
-          "description": "User name",
-          "type": "string"
-        },
-        "role": {
-          "description": "User role",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id"
-      ],
-      "title": "User",
-      "type": "object"
-    },
     "Answer": {
       "description": "A single answer",
       "example": {
@@ -184,23 +192,11 @@
       "title": "Answer",
       "type": "object"
     },
-    "Users": {
-      "description": "A collection of Users",
-      "items": {
-        "$ref": "#/definitions/User"
-      },
-      "title": "Users",
-      "type": "array"
-    },
     "CreateAnswerBody": {
       "description": "Template for creating answers",
       "properties": {
         "content": {
           "description": "Answer content",
-          "type": "string"
-        },
-        "id": {
-          "description": "Unique identifier",
           "type": "string"
         },
         "monitor_id": {
@@ -568,7 +564,7 @@
     "/questions/{question_id}": {
       "delete": {
         "description": "Delete a question",
-        "operationId": "QuestionsWeb.QuestionController.delete_question",
+        "operationId": "QuestionsWeb.QuestionController.delete",
         "parameters": [
           {
             "description": "ID of question to delete",

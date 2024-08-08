@@ -71,7 +71,7 @@ defmodule QuestionsWeb.QuestionController do
     end
   end
 
-  def delete_question(conn, %{"question_id" => question_id}) do
+  def delete(conn, %{"id" => question_id}) do
     user = AccessControl.Guardian.Plug.current_resource(conn)
 
     with :ok <- AccessControl.authorize(user, :delete_question),

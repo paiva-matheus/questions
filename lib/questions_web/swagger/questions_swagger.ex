@@ -53,8 +53,8 @@ defmodule QuestionsWeb.QuestionsSwagger do
         response(401, "Unauthorized")
       end
 
-      swagger_path :delete_question do
-        delete("/questions/{question_id}")
+      swagger_path :delete do
+        PhoenixSwagger.Path.delete("/questions/{question_id}")
         description("Delete a question")
         parameter("question_id", :path, :string, "ID of question to delete", required: true)
         response(204, "No content")

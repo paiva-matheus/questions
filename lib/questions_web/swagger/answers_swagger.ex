@@ -54,8 +54,6 @@ defmodule QuestionsWeb.AnswersSwagger do
         response(401, "Unauthorized")
       end
 
-
-
       ## Schemas
       def swagger_definitions do
         %{
