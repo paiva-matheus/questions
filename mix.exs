@@ -10,7 +10,8 @@ defmodule Questions.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      test_coverage: [tool: ExCoveralls]
+      test_coverage: [tool: ExCoveralls],
+      compilers: [:phoenix, :gettext] ++ Mix.compilers() ++ [:phoenix_swagger]
     ]
   end
 
@@ -56,7 +57,9 @@ defmodule Questions.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:guardian, "~> 2.2"},
       {:excoveralls, "~> 0.14", only: :test},
-      {:sobelow, ">= 0.0.0", only: :test}
+      {:sobelow, ">= 0.0.0", only: :test},
+      {:phoenix_swagger, "~> 0.8"},
+      {:ex_json_schema, "~> 0.5"}
     ]
   end
 

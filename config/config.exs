@@ -17,7 +17,15 @@ config :questions, QuestionsWeb.Endpoint,
   adapter: Bandit.PhoenixAdapter,
   render_errors: [view: QuestionsWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Questions.PubSub,
-  live_view: [signing_salt: "Ko1n2vjV"]
+  live_view: [signing_salt: "Ko1n2vjV"],
+  live_reload: [
+    patterns: [
+      ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg|json)$},
+      ~r{lib/questions_web/views/.*(ex)$},
+      ~r{lib/questions_web/controllers/.*(ex)$}
+    ]
+  ],
+  reloadable_compilers: [:gettext, :phoenix, :elixir, :phoenix_swagger]
 
 # Configures the mailer
 #
@@ -47,6 +55,17 @@ config :questions, Questions.AccessControl.Guardian,
   secret_key: System.get_env("GUARDIAN_TOKEN")
 
 config :bcrypt_elixir, log_rounds: 4
+
+# Swagger
+config :questions, :phoenix_swagger,
+  swagger_files: %{
+    "priv/static/swagger.json" => [
+      router: QuestionsWeb.Router,
+      endpoint: QuestionsWeb.Endpoint
+    ]
+  }
+
+config :phoenix_swagger, json_library: Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
