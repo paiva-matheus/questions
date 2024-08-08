@@ -1,8 +1,9 @@
 defmodule QuestionsWeb.Swagger.CommonParameters do
   @moduledoc "Common parameter declarations for phoenix swagger"
 
-  alias PhoenixSwagger.Path.PathObject
   import PhoenixSwagger.Path
+
+  alias PhoenixSwagger.Path.PathObject
 
   def question(path = %PathObject{}) do
     path

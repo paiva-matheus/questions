@@ -1,4 +1,5 @@
 defmodule QuestionsWeb.QuestionsSwagger do
+  @moduledoc false
   use PhoenixSwagger
 
   alias QuestionsWeb.Swagger.CommonParameters
