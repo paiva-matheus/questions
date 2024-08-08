@@ -20,6 +20,11 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 * Check if your code is formatted: `mix format --check-formatted`
 * Security analysis: `mix sobelow`
 
+**Create an admin user**
+``docker compose run --rm web bash``
+``iex -S mix``
+``Questions.Accounts.register(%{name: "Your name", role: "admin", email: "email@mail.com", password: "password"})``
+
 ## Directories structure
 
 * config/: Runtime configuration for the mix application
