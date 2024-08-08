@@ -87,7 +87,7 @@
       "type": "object"
     },
     "CreateQuestionBody": {
-      "description": "Question description",
+      "description": "Template for creating questions",
       "properties": {
         "category": {
           "description": "Question category",
@@ -111,7 +111,7 @@
         "description",
         "title"
       ],
-      "title": "Question title",
+      "title": "Create Question Model",
       "type": "object"
     }
   },

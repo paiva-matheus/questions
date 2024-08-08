@@ -114,8 +114,8 @@ defmodule QuestionsWeb.QuestionsSwagger do
             end,
           CreateQuestionBody:
             swagger_schema do
-              title("Question title")
-              description("Question description")
+              title("Create Question Model")
+              description("Template for creating questions")
 
               properties do
                 user_id(:string, "Unique identifier")
