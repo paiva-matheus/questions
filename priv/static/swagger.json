@@ -146,6 +146,44 @@
       "title": "User",
       "type": "object"
     },
+    "Answer": {
+      "description": "A single answer",
+      "example": {
+        "content": "Can't connect to WSL2 localhost server from WSL2 docker container",
+        "favorite": false,
+        "id": "uuid",
+        "monitor_id": "uuid",
+        "question_id": "uuid"
+      },
+      "properties": {
+        "content": {
+          "description": "Answer content",
+          "type": "string"
+        },
+        "favorite": {
+          "description": "Answer favorite",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "monitor_id": {
+          "description": "Monitor id",
+          "type": "string"
+        },
+        "question_id": {
+          "description": "Question id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "monitor_id",
+        "content"
+      ],
+      "title": "Answer",
+      "type": "object"
+    },
     "Users": {
       "description": "A collection of Users",
       "items": {
@@ -153,6 +191,34 @@
       },
       "title": "Users",
       "type": "array"
+    },
+    "CreateAnswerBody": {
+      "description": "Template for creating answers",
+      "properties": {
+        "content": {
+          "description": "Answer content",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "monitor_id": {
+          "description": "Monitor id",
+          "type": "string"
+        },
+        "question_id": {
+          "description": "Question id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question_id",
+        "monitor_id",
+        "content"
+      ],
+      "title": "Create Answer Model",
+      "type": "object"
     }
   },
   "paths": {
@@ -249,6 +315,146 @@
         "summary": "",
         "tags": [
           "Account"
+        ]
+      }
+    },
+    "/answers": {
+      "post": {
+        "description": "Add a new answer",
+        "operationId": "QuestionsWeb.AnswerController.create",
+        "parameters": [
+          {
+            "description": "Question object that needs to be added to the store",
+            "in": "body",
+            "name": "tracker",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateAnswerBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Answer"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Answer"
+        ]
+      }
+    },
+    "/answers/{answer_id}": {
+      "delete": {
+        "description": "Delete a answer",
+        "operationId": "QuestionsWeb.AnswerController.delete",
+        "parameters": [
+          {
+            "description": "ID of answer to delete",
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Answer Not Found"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Answer"
+        ]
+      }
+    },
+    "/answers/{answer_id}/favorite": {
+      "patch": {
+        "description": "Favorite a answer",
+        "operationId": "QuestionsWeb.AnswerController.favorite",
+        "parameters": [
+          {
+            "description": "ID of question to favorite",
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Question"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Answer Not Found"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Answer"
+        ]
+      }
+    },
+    "/answers/{answer_id}/unfavorite": {
+      "patch": {
+        "description": "Unfavorite a answer",
+        "operationId": "QuestionsWeb.AnswerController.unfavorite",
+        "parameters": [
+          {
+            "description": "ID of question to unfavorite",
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Question"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Answer Not Found"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Answer"
         ]
       }
     },
