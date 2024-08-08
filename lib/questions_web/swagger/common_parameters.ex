@@ -38,4 +38,16 @@ defmodule QuestionsWeb.Swagger.CommonParameters do
       collectionFormat: :csv
     )
   end
+
+  def user(path = %PathObject{}) do
+    path
+    |> parameter("name", :query, :string, "User name", required: true)
+    |> parameter("email", :query, :string, "User email", required: true)
+    |> parameter("password", :query, :string, "User password", required: true)
+    |> parameter("role", :query, :array, "Available roles : student, monitor, admin",
+      items: [type: :string, enum: [:student, :monitor, :admin]],
+      collectionFormat: :csv,
+      required: true
+    )
+  end
 end

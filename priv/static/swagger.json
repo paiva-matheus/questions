@@ -113,9 +113,145 @@
       ],
       "title": "Create Question Model",
       "type": "object"
+    },
+    "User": {
+      "description": "A single user",
+      "example": {
+        "email": "dwight@mail.com",
+        "id": "uuid",
+        "name": "Dwight",
+        "role": "admin"
+      },
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "name": {
+          "description": "User name",
+          "type": "string"
+        },
+        "role": {
+          "description": "User role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "User",
+      "type": "object"
+    },
+    "Users": {
+      "description": "A collection of Users",
+      "items": {
+        "$ref": "#/definitions/User"
+      },
+      "title": "Users",
+      "type": "array"
     }
   },
   "paths": {
+    "/admin/accounts": {
+      "get": {
+        "description": "List Users",
+        "operationId": "QuestionsWeb.AccountController.index",
+        "parameters": [
+          {
+            "description": "User name",
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "User email",
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "User password",
+            "in": "query",
+            "name": "password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "collectionFormat": "csv",
+            "description": "Available roles : student, monitor, admin",
+            "in": "query",
+            "items": {
+              "enum": [
+                "student",
+                "monitor",
+                "admin"
+              ],
+              "type": "string"
+            },
+            "name": "role",
+            "required": true,
+            "type": "array"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Account"
+        ]
+      },
+      "post": {
+        "description": "Add a new user",
+        "operationId": "QuestionsWeb.AccountController.create",
+        "parameters": [
+          {
+            "description": "Question object that needs to be added to the store",
+            "in": "body",
+            "name": "tracker",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Question"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Account"
+        ]
+      }
+    },
     "/questions": {
       "get": {
         "description": "List Questions",

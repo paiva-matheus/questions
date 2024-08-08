@@ -1,5 +1,6 @@
 defmodule QuestionsWeb.AccountController do
   use QuestionsWeb, :controller
+  use QuestionsWeb.AccountsSwagger
 
   action_fallback QuestionsWeb.FallbackController
 
