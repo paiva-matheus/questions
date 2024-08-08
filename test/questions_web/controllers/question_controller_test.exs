@@ -408,7 +408,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
     end
   end
 
-  describe "delete/2" do
+  describe "delete_question/2" do
     test "returns 204", %{conn: conn} do
       user = Factory.insert(:user, role: "student")
       question = Factory.insert(:question, user: user)
@@ -416,7 +416,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
       conn =
         conn
         |> authorize_request!(user)
-        |> delete(Routes.question_path(conn, :delete, question.id))
+        |> delete(Routes.question_question_path(conn, :delete_question, question.id))
 
       assert response(conn, 204) == ""
     end
@@ -427,7 +427,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
       conn =
         conn
         |> authorize_request!(user)
-        |> delete(Routes.question_path(conn, :delete, Ecto.UUID.generate()))
+        |> delete(Routes.question_question_path(conn, :delete_question, Ecto.UUID.generate()))
 
       assert json_response(conn, 404) == %{
                "errors" => %{
@@ -443,7 +443,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
       conn =
         conn
         |> authorize_request!(user)
-        |> delete(Routes.question_path(conn, :delete, question.id))
+        |> delete(Routes.question_question_path(conn, :delete_question, question.id))
 
       assert json_response(conn, 403) == %{
                "errors" => %{
@@ -459,7 +459,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
       conn =
         conn
         |> authorize_request!(user)
-        |> delete(Routes.question_path(conn, :delete, question.id))
+        |> delete(Routes.question_question_path(conn, :delete_question, question.id))
 
       assert json_response(conn, 403) == %{
                "errors" => %{
@@ -470,7 +470,7 @@ defmodule QuestionsWeb.QuestionControllerTest do
 
     test "returns 401 for unauthorized request", %{conn: conn} do
       question = Factory.insert(:question)
-      conn = delete(conn, Routes.question_path(conn, :delete, question.id))
+      conn = delete(conn, Routes.question_question_path(conn, :delete_question, question.id))
 
       assert json_response(conn, 401) == %{
                "errors" => %{

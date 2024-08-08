@@ -15,6 +15,7 @@
     "lib/questions_web/gettext.ex",
     "lib/questions_web/plugs/authentication_pipeline.ex",
     "lib/questions_web/error_helpers.ex",
+    "lib/questions_web/swagger",
     "test/support/data_case.ex",
     "test/support/conn_case.ex",
     "test/support/factory.ex",

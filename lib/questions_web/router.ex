@@ -26,7 +26,8 @@ defmodule QuestionsWeb.Router do
     resources("/accounts", AccountController, only: [:index, :create])
 
     # Questions
-    resources("/questions", QuestionController, only: [:index, :create, :show, :delete]) do
+    resources("/questions", QuestionController, only: [:index, :create, :show]) do
+      delete("", QuestionController, :delete_question)
       patch("/complete", QuestionController, :complete)
     end
 
@@ -35,6 +36,20 @@ defmodule QuestionsWeb.Router do
       patch("/favorite", AnswerController, :favorite)
       patch("/unfavorite", AnswerController, :unfavorite)
     end
+  end
+
+  # Swagger
+  def swagger_info do
+    %{
+      info: %{
+        version: "1.0",
+        title: "Questions"
+      }
+    }
+  end
+
+  scope "/api/swagger" do
+    forward "/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :questions, swagger_file: "swagger.json"
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
