@@ -11,7 +11,7 @@ defmodule Questions.MixProject do
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      compilers: [:phoenix] ++ Mix.compilers() ++ [:phoenix_swagger]
+      compilers: Mix.compilers() ++ [:phoenix_swagger]
     ]
   end
 

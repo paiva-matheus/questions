@@ -5,6 +5,7 @@ defmodule Questions.Factory do
   alias Questions.Accounts.User
   alias Questions.Doubts.Answer
   alias Questions.Doubts.Question
+  alias Questions.Doubts.QuestionSubscriber
 
   def user_factory do
     %User{
@@ -32,6 +33,13 @@ defmodule Questions.Factory do
       question: build(:question),
       user: build(:user, role: "monitor"),
       favorite: false
+    }
+  end
+
+  def question_subscriber_factory do
+    %QuestionSubscriber{
+      category: sequence(:category, ["technology", "engineering", "science", "others"]),
+      user: build(:user)
     }
   end
 end

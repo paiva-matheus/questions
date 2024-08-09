@@ -13,6 +13,123 @@
       "title": "Questions",
       "type": "array"
     },
+    "User": {
+      "description": "A single user",
+      "example": {
+        "email": "dwight@mail.com",
+        "id": "uuid",
+        "name": "Dwight",
+        "role": "admin"
+      },
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "name": {
+          "description": "User name",
+          "type": "string"
+        },
+        "role": {
+          "description": "User role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "User",
+      "type": "object"
+    },
+    "SignInBody": {
+      "description": "Body to sign in",
+      "example": {
+        "email": "dwight@mail.com",
+        "password": "password"
+      },
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "password": {
+          "description": "password",
+          "type": "string"
+        }
+      },
+      "title": "SignInBody",
+      "type": "object"
+    },
+    "SignInResponse": {
+      "description": "Sign in response",
+      "example": {
+        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJxdWVzdGlvbnMiLCJleHAiOjE3MjM3NTU4NzMsImlhdCI6MTcyMzE1MTA3MywiaXNzIjoicXVlc3Rpb25zIiwianRpIjoiNjRiYmQ5OGItZGE0NS00YWNhLWFlZTgtODcxNGQwMjFhYzBhIiwibmJmIjoxNzIzMTUxMDcyLCJzdWIiOiI4MWI1YmY3NS1jNGRjLTRhMTctYjMwYi1lMmQ4YzIxNGU1MTMiLCJ0eXAiOiJhY2Nlc3MifQ.ejOem2Uq-GiDAVpI-jwPUWH_wAkXsLZAtV_MIkxZyW2dxVKrECH1ub6TvJadpucWJynBtxrBlUFisCYjWfdAhQ",
+        "user": {
+          "email": "dwight@mail.com",
+          "id": "uuid",
+          "name": "Dwight",
+          "role": "student"
+        }
+      },
+      "properties": {
+        "token": {
+          "description": "token",
+          "type": "string"
+        },
+        "user": {
+          "description": {
+            "$ref": "#/definitions/User"
+          },
+          "type": "User"
+        }
+      },
+      "title": "SignInResponse",
+      "type": "object"
+    },
+    "Student": {
+      "description": "A single user",
+      "example": {
+        "email": "dwight@mail.com",
+        "id": "uuid",
+        "name": "Dwight",
+        "role": "student"
+      },
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "name": {
+          "description": "User name",
+          "type": "string"
+        },
+        "role": {
+          "description": "Student",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "User",
+      "type": "object"
+    },
+    "Users": {
+      "description": "A collection of Users",
+      "items": {
+        "$ref": "#/definitions/User"
+      },
+      "title": "Users",
+      "type": "array"
+    },
     "Question": {
       "description": "A single question",
       "example": {
@@ -114,38 +231,6 @@
       "title": "Create Question Model",
       "type": "object"
     },
-    "User": {
-      "description": "A single user",
-      "example": {
-        "email": "dwight@mail.com",
-        "id": "uuid",
-        "name": "Dwight",
-        "role": "admin"
-      },
-      "properties": {
-        "email": {
-          "description": "User email",
-          "type": "string"
-        },
-        "id": {
-          "description": "Unique identifier",
-          "type": "string"
-        },
-        "name": {
-          "description": "User name",
-          "type": "string"
-        },
-        "role": {
-          "description": "User role",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id"
-      ],
-      "title": "User",
-      "type": "object"
-    },
     "Answer": {
       "description": "A single answer",
       "example": {
@@ -184,14 +269,6 @@
       "title": "Answer",
       "type": "object"
     },
-    "Users": {
-      "description": "A collection of Users",
-      "items": {
-        "$ref": "#/definitions/User"
-      },
-      "title": "Users",
-      "type": "array"
-    },
     "CreateAnswerBody": {
       "description": "Template for creating answers",
       "properties": {
@@ -214,83 +291,6 @@
         "content"
       ],
       "title": "Create Answer Model",
-      "type": "object"
-    },
-    "Student": {
-      "description": "A single user",
-      "example": {
-        "email": "dwight@mail.com",
-        "id": "uuid",
-        "name": "Dwight",
-        "role": "student"
-      },
-      "properties": {
-        "email": {
-          "description": "User email",
-          "type": "string"
-        },
-        "id": {
-          "description": "Unique identifier",
-          "type": "string"
-        },
-        "name": {
-          "description": "User name",
-          "type": "string"
-        },
-        "role": {
-          "description": "Student",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id"
-      ],
-      "title": "User",
-      "type": "object"
-    },
-    "SignInBody": {
-      "description": "Body to sign in",
-      "example": {
-        "email": "dwight@mail.com",
-        "password": "password"
-      },
-      "properties": {
-        "email": {
-          "description": "User email",
-          "type": "string"
-        },
-        "password": {
-          "description": "password",
-          "type": "string"
-        }
-      },
-      "title": "SignInBody",
-      "type": "object"
-    },
-    "SignInResponse": {
-      "description": "Sign in response",
-      "example": {
-        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJxdWVzdGlvbnMiLCJleHAiOjE3MjM3NTU4NzMsImlhdCI6MTcyMzE1MTA3MywiaXNzIjoicXVlc3Rpb25zIiwianRpIjoiNjRiYmQ5OGItZGE0NS00YWNhLWFlZTgtODcxNGQwMjFhYzBhIiwibmJmIjoxNzIzMTUxMDcyLCJzdWIiOiI4MWI1YmY3NS1jNGRjLTRhMTctYjMwYi1lMmQ4YzIxNGU1MTMiLCJ0eXAiOiJhY2Nlc3MifQ.ejOem2Uq-GiDAVpI-jwPUWH_wAkXsLZAtV_MIkxZyW2dxVKrECH1ub6TvJadpucWJynBtxrBlUFisCYjWfdAhQ",
-        "user": {
-          "email": "dwight@mail.com",
-          "id": "uuid",
-          "name": "Dwight",
-          "role": "student"
-        }
-      },
-      "properties": {
-        "token": {
-          "description": "token",
-          "type": "string"
-        },
-        "user": {
-          "description": {
-            "$ref": "#/definitions/User"
-          },
-          "type": "User"
-        }
-      },
-      "title": "SignInResponse",
       "type": "object"
     }
   },
@@ -362,7 +362,7 @@
         "operationId": "QuestionsWeb.AccountController.create",
         "parameters": [
           {
-            "description": "Question object that needs to be added to the store",
+            "description": "User object that needs to create",
             "in": "body",
             "name": "tracker",
             "required": true,
@@ -397,7 +397,7 @@
         "operationId": "QuestionsWeb.AnswerController.create",
         "parameters": [
           {
-            "description": "Question object that needs to be added to the store",
+            "description": "Answer object that needs to create",
             "in": "body",
             "name": "tracker",
             "required": true,
@@ -609,7 +609,7 @@
         "operationId": "QuestionsWeb.QuestionController.create",
         "parameters": [
           {
-            "description": "Question object that needs to be added to the store",
+            "description": "Question object that needs to create",
             "in": "body",
             "name": "tracker",
             "required": true,
@@ -747,7 +747,7 @@
         "operationId": "QuestionsWeb.StudentController.create",
         "parameters": [
           {
-            "description": "Question object that needs to be added to the store",
+            "description": "Student object that needs to create",
             "in": "body",
             "name": "tracker",
             "required": true,
