@@ -606,7 +606,7 @@
       },
       "post": {
         "description": "Add a new question",
-        "operationId": "QuestionsWeb.QuestionController.create",
+        "operationId": "QuestionsWeb.QuestionSubscriberController.create",
         "parameters": [
           {
             "description": "Question object that needs to create",
@@ -634,7 +634,7 @@
         },
         "summary": "",
         "tags": [
-          "Question"
+          "QuestionSubscriber"
         ]
       }
     },

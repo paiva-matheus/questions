@@ -49,6 +49,20 @@ defmodule Questions.Doubts.QuestionSubscriberTest do
              }
     end
 
+    test "validates if user exist" do
+      attrs = %{
+        user_id: Ecto.UUID.generate(),
+        category: "technology"
+      }
+
+      changeset = QuestionSubscriber.create_changeset(%QuestionSubscriber{}, attrs)
+      refute changeset.valid?
+
+      assert errors_on(changeset) == %{
+               user_id: ["does not exist"]
+             }
+    end
+
     test "validates if user is monitor" do
       user = Factory.insert(:user, role: "student")
 

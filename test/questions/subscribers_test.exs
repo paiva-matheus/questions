@@ -7,10 +7,12 @@ defmodule Questions.QuestionSubscriberTest do
 
   describe "create_question_subscriber/1" do
     test "create a new question" do
-      user = Factory.insert(:user, "monitor")
+      user = Factory.insert(:user, role: "monitor")
       attrs = Factory.params_with_assocs(:question_subscriber, user: user)
 
-      assert {:ok, created_question_subscriber} = Subscribers.create_question_subscriber(attrs)
+      assert {:ok, %QuestionSubscriber{} = created_question_subscriber} =
+               Subscribers.create_question_subscriber(attrs)
+
       assert created_question_subscriber.user_id == attrs.user_id
       assert created_question_subscriber.category == attrs.category
     end
@@ -25,7 +27,10 @@ defmodule Questions.QuestionSubscriberTest do
     end
 
     test "returns an error when user_id doesn't exist" do
-      attrs = Factory.params_for(:question_subscriber, user_id: Ecto.UUID.generate())
+      attrs = %{
+        user_id: Ecto.UUID.generate(),
+        category: "technology"
+      }
 
       assert {:error, %Ecto.Changeset{} = changeset} =
                Subscribers.create_question_subscriber(attrs)
@@ -34,7 +39,7 @@ defmodule Questions.QuestionSubscriberTest do
     end
 
     test "returns an error when the user is not a monitor" do
-      user = Factory.insert(:user, "student")
+      user = Factory.insert(:user, role: "student")
       attrs = Factory.params_with_assocs(:question_subscriber, user: user)
 
       assert {:error, %Ecto.Changeset{} = changeset} =

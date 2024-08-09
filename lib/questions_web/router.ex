@@ -43,6 +43,12 @@ defmodule QuestionsWeb.Router do
     end
   end
 
+  scope "/", QuestionsWeb do
+    pipe_through([:api, :jwt_authentication])
+
+    resources("/question_subscribers", QuestionSubscriberController, only: [:create])
+  end
+
   # Swagger
   def swagger_info do
     %{

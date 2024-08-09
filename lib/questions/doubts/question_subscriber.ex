@@ -39,14 +39,17 @@ defmodule Questions.Doubts.QuestionSubscriber do
 
   defp validate_user(
          %Ecto.Changeset{
-           data: %{
+           changes: %{
              user_id: user_id
            }
          } = changeset
        ) do
     case Repo.get(User, user_id) do
       %User{role: "monitor"} -> changeset
+      nil -> add_error(changeset, :user_id, "does not exist")
       _ -> add_error(changeset, :user, "Only users with the monitor role can subscriber question")
     end
   end
+
+  defp validate_user(%Ecto.Changeset{} = changeset), do: changeset
 end
