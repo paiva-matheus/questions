@@ -87,5 +87,10 @@ defmodule Questions.AccessControlTest do
         assert :ok = AccessControl.authorize(user, :delete_question)
       end
     end
+
+    test "monitors can create question subscriber" do
+      user = Factory.build(:user, role: "monitor")
+      assert :ok = AccessControl.authorize(user, :create_question_subscriber)
+    end
   end
 end
