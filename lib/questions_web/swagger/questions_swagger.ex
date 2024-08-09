@@ -33,7 +33,7 @@ defmodule QuestionsWeb.QuestionsSwagger do
           tracker(
             :body,
             Schema.ref(:CreateQuestionBody),
-            "Question object that needs to be added to the store",
+            "Question object that needs to create",
             required: true
           )
         end

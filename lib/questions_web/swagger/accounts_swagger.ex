@@ -23,12 +23,12 @@ defmodule QuestionsWeb.AccountsSwagger do
           tracker(
             :body,
             Schema.ref(:User),
-            "Question object that needs to be added to the store",
+            "User object that needs to create",
             required: true
           )
         end
 
-        response(201, "Created", Schema.ref(:Question))
+        response(201, "Created", Schema.ref(:User))
         response(403, "Forbidden")
         response(401, "Unauthorized")
       end

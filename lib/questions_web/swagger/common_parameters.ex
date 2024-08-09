@@ -25,20 +25,6 @@ defmodule QuestionsWeb.Swagger.CommonParameters do
     )
   end
 
-  def question_answer(path = %PathObject{}) do
-    path
-    |> parameter("content", :query, :string, "Answer content", required: false)
-    |> parameter("description", :query, :string, "Question Description", required: false)
-    |> parameter("category", :query, :array, "Question Category",
-      items: [type: :string, enum: [:technology, :engineering, :science, :others]],
-      collectionFormat: :csv
-    )
-    |> parameter("status", :query, :array, "Question Status",
-      items: [type: :string, enum: [:open, :in_progress, :completed]],
-      collectionFormat: :csv
-    )
-  end
-
   def user(path = %PathObject{}) do
     path
     |> parameter("name", :query, :string, "User name", required: true)

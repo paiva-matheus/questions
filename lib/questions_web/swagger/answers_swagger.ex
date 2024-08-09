@@ -2,8 +2,6 @@ defmodule QuestionsWeb.AnswersSwagger do
   @moduledoc false
   use PhoenixSwagger
 
-  # alias QuestionsWeb.Swagger.CommonParameters
-
   defmacro __using__(_opts) do
     quote do
       swagger_path :create do
@@ -14,7 +12,7 @@ defmodule QuestionsWeb.AnswersSwagger do
           tracker(
             :body,
             Schema.ref(:CreateAnswerBody),
-            "Question object that needs to be added to the store",
+            "Answer object that needs to create",
             required: true
           )
         end
