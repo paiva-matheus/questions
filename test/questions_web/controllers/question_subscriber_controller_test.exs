@@ -24,7 +24,13 @@ defmodule QuestionsWeb.QuestionSubscriberControllerTest do
       response = json_response(conn, 201)["data"]
 
       assert response["category"] == params["category"]
-      IO.inspect(response["user"])
+
+      assert response["user"] == %{
+               "id" => response["user"]["id"],
+               "name" => response["user"]["name"],
+               "email" => response["user"]["email"],
+               "role" => response["user"]["role"]
+             }
     end
 
     test "returns 403 when user doesn't have permission", %{conn: conn} do

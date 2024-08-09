@@ -1,6 +1,6 @@
 defmodule QuestionsWeb.QuestionSubscriberController do
   use QuestionsWeb, :controller
-  use QuestionsWeb.QuestionsSwagger
+  use QuestionsWeb.QuestionSubscribersSwagger
 
   action_fallback QuestionsWeb.FallbackController
 

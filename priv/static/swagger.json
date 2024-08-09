@@ -292,6 +292,80 @@
       ],
       "title": "Create Answer Model",
       "type": "object"
+    },
+    "CreateQuestionSubscriberBody": {
+      "description": "Template for creating question subscriber",
+      "properties": {
+        "category": {
+          "description": "Question category",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "Unique identifier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "title": "Create Question Subscriber Model",
+      "type": "object"
+    },
+    "QuestionSubscriber": {
+      "description": "A single question subscriber",
+      "example": {
+        "category": "technology",
+        "id": "uuid",
+        "user": {
+          "email": "dwight@mail.com",
+          "id": "uuid",
+          "name": "Dwight",
+          "role": "admin"
+        }
+      },
+      "properties": {
+        "answers": {
+          "description": "List of answers",
+          "type": "list"
+        },
+        "category": {
+          "description": "Question category",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "user": {
+          "properties": {
+            "email": {
+              "description": "User email",
+              "type": "string"
+            },
+            "id": {
+              "description": "Unique identifier",
+              "type": "string"
+            },
+            "name": {
+              "description": "User name",
+              "type": "string"
+            },
+            "role": {
+              "description": "User role",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "title": "Question Subscriber",
+      "type": "object"
     }
   },
   "paths": {
@@ -531,6 +605,41 @@
         ]
       }
     },
+    "/question_subscribers": {
+      "post": {
+        "description": "Add a new question subscriber",
+        "operationId": "QuestionsWeb.QuestionSubscriberController.create",
+        "parameters": [
+          {
+            "description": "Question object that needs to create",
+            "in": "body",
+            "name": "tracker",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateQuestionSubscriberBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/QuestionSubscriber"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "",
+        "tags": [
+          "QuestionSubscriber"
+        ]
+      }
+    },
     "/questions": {
       "get": {
         "description": "List Questions",
@@ -606,7 +715,7 @@
       },
       "post": {
         "description": "Add a new question",
-        "operationId": "QuestionsWeb.QuestionSubscriberController.create",
+        "operationId": "QuestionsWeb.QuestionController.create",
         "parameters": [
           {
             "description": "Question object that needs to create",
@@ -634,7 +743,7 @@
         },
         "summary": "",
         "tags": [
-          "QuestionSubscriber"
+          "Question"
         ]
       }
     },
